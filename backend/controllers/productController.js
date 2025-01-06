@@ -1,5 +1,6 @@
 import {getAllProducts as getAllProductsService} from "../services/productsService.js";
 import {getProductById as getProductByIdService} from "../services/productsService.js";
+import {addNewProduct as addNewProductsService} from "../services/productsService.js";
 
 export const getAllProducts = async (req, res, next) => {
     try{
@@ -19,6 +20,20 @@ export const getProductById = async (req, res, next) => {
         }
 
         res.status(200).json(product);
+    }
+    catch (error) {
+        next(error)
+    }
+}
+export const addNewProduct = async (req, res, next) => {
+    try {
+        console.log('dane przeslane:' + req.body);
+        const product = await addNewProductsService(req.body);
+        if (!product) {
+            res.status(404).json({message: 'Product not found'});
+        }
+        res.status(200).json(product);
+
     }
     catch (error) {
         next(error)

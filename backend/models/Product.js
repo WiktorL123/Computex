@@ -14,6 +14,6 @@ const productSchema = new mongoose.Schema({
     stock: {type: Number, default: 0},
     images: [String]
 }, {timestamps: true, collection: 'Products'});
-;
+
 
 export const Product = mongoose.model('Product', productSchema);

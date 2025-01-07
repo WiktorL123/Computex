@@ -20,3 +20,12 @@ export const updateProductStock = async (id, stock) =>{
     await product.save();
     return product;
 }
+
+export const deleteProduct = async (id) =>{
+    const product = await Product.findById(id)
+    if (!product) {
+        throw new Error('Product not found');
+    }
+    await product.deleteOne()
+    return {message: 'Product deleted successfully'};
+}

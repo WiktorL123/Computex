@@ -2,7 +2,8 @@ import {
     getAllProducts as getAllProductsService,
     getProductById as getProductByIdService,
     addNewProduct as addNewProductsService,
-    updateProductStock as updateProductStockService,}
+    updateProductStock as updateProductStockService,
+    deleteProduct as deleteProductService,}
     from "../services/productsService.js";
 
 export const getAllProducts = async (req, res, next) => {
@@ -56,7 +57,20 @@ export const updateProductStock = async (req, res, next) => {
         res.status(200).json({message: 'updated', updatedProduct});
     }
     catch (error) {
+        res.status(400).json({ message: error.message });
         next(error)
     }
+}
+export const deleteProduct = async (req, res, next) => {
+    try{
+        const {id} = req.params;
+        const result = await deleteProductService(id);
+        res.status(200).json({message: result});
+    }catch(error){
+        res.status(400).json({message: error.message});
+        next(error)
+    }
+
+
 }
 

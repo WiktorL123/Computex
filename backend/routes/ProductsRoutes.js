@@ -3,7 +3,8 @@ import
 {   getAllProducts,
     getProductById,
     addNewProduct,
-    updateProductStock
+    updateProductStock,
+    deleteProduct
 } from "../controllers/productController.js";
 
 export const productsRouter = express.Router();
@@ -16,3 +17,5 @@ productsRouter.get('/:id', getProductById)
 productsRouter.post('/', addNewProduct)
 
 productsRouter.patch('/:id/stock', updateProductStock )
+
+productsRouter.delete('/:id', deleteProduct)

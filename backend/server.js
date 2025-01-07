@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import {loggerInit} from "./middlewares/logger.js";
+import {logger} from "./middlewares/logger.js";
 import {errorHandler} from "./middlewares/errorMiddleware.js";
 import {coonectDB} from './config/dbConfig.js'
 import {productsRouter} from "./routes/ProductsRoutes.js";
@@ -11,9 +11,9 @@ coonectDB()
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-loggerInit(app);
+app.use(logger)
+
 
 app.get('/', (req, res) => {
     res.send("backend dziala!")

@@ -35,7 +35,7 @@ export const addNewProduct = async (req, res, next) => {
         if (!product) {
             res.status(404).json({message: 'Product not found'});
         }
-        res.status(200).json(product);
+        res.status(200).json({message: 'created:', product});
 
     }
     catch (error) {
@@ -53,7 +53,7 @@ export const updateProductStock = async (req, res, next) => {
         }
 
         const updatedProduct = await updateProductStockService(id, stock);
-        res.status(200).json(updatedProduct);
+        res.status(200).json({message: 'updated', updatedProduct});
     }
     catch (error) {
         next(error)

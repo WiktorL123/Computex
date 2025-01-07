@@ -3,10 +3,7 @@ import express from "express";
 
 
 export const loggerInit = (app) => {
-    /**
-     * Inicjuje middleware logujące z morgan-body.
-     * @param {express.Application} app - Instancja aplikacji Express.
-     */
+
     app.use(express.json());
 
 

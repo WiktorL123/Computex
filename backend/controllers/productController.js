@@ -1,7 +1,8 @@
 import {
     getAllProducts as getAllProductsService,
     getProductById as getProductByIdService,
-    addNewProduct as addNewProductsService}
+    addNewProduct as addNewProductsService,
+    updateProductStock as updateProductStockService,}
     from "../services/productsService.js";
 
 export const getAllProducts = async (req, res, next) => {
@@ -41,3 +42,21 @@ export const addNewProduct = async (req, res, next) => {
         next(error)
     }
 }
+export const updateProductStock = async (req, res, next) => {
+    try {
+        console.log('dane przeslane:' + req.params);
+        const {id} = req.params;
+        const {stock} = req.body
+
+        if (typeof stock !== 'number' || stock < 0) {
+            return res.status(400).json({ message: "Invalid stock value" });
+        }
+
+        const updatedProduct = await updateProductStockService(id, stock);
+        res.status(200).json(updatedProduct);
+    }
+    catch (error) {
+        next(error)
+    }
+}
+

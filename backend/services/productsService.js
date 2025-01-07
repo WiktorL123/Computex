@@ -11,3 +11,12 @@ export const addNewProduct = async(productData) => {
    await product.save();
    return product;
 }
+export const updateProductStock = async (id, stock) =>{
+    const product = await Product.findById(id)
+    if (!product) {
+        throw new Error('Product not found');
+    }
+    product.stock = stock;
+    await product.save();
+    return product;
+}

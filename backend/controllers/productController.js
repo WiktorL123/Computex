@@ -1,6 +1,8 @@
-import {getAllProducts as getAllProductsService} from "../services/productsService.js";
-import {getProductById as getProductByIdService} from "../services/productsService.js";
-import {addNewProduct as addNewProductsService} from "../services/productsService.js";
+import {
+    getAllProducts as getAllProductsService,
+    getProductById as getProductByIdService,
+    addNewProduct as addNewProductsService}
+    from "../services/productsService.js";
 
 export const getAllProducts = async (req, res, next) => {
     try{

@@ -25,7 +25,7 @@ app.post('/api/test', (req, res) => {
     });
 });
 
-app.use('/products', productsRouter)
+app.use('/api/products', productsRouter)
 
 app.get('/error', (req, res) => {
     throw new Error('błąd')

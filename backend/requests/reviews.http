@@ -1,0 +1,29 @@
+GET localhost:8080/api/reviews
+###
+GET localhost:8080/api/reviews/677ee626b8f430460d8d02a7
+###
+PUT localhost:8080/api/reviews/677ee626b8f430460d8d02a7/edit
+Content-Type: application/json
+
+{
+  "product_id": "64d8aabb1122cc334455bbbb",
+  "user_id": "64d8aabb1122cc334455",
+  "rating": 4.5,
+  "comment": "dobry produkt!",
+  "created_at": "2025-01-08T20:55:02.398Z"
+}
+
+###
+POST localhost:8080/api/reviews
+Content-Type: application/json
+
+{
+  "product_id": "64d8aabb1122cc334455aaaa",
+  "user_id": "64d8aabb1122cc334455bbbb",
+  "rating": 4.5,
+  "comment": "dobry produkt!",
+  "created_at": "2025-01-08T20:55:02.398Z"
+}
+###
+
+DELETE localhost:8080/api/reviews/677ef897130c9bc8e6c0fafc

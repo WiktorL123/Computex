@@ -4,7 +4,7 @@ import
     getProductById,
     addNewProduct,
     updateProductStock,
-    deleteProduct
+    deleteProduct,
 } from "../controllers/productController.js";
 
 export const productsRouter = express.Router();
@@ -19,3 +19,4 @@ productsRouter.post('/', addNewProduct)
 productsRouter.patch('/:id/stock', updateProductStock )
 
 productsRouter.delete('/:id', deleteProduct)
+

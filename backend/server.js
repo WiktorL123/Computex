@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 import {logger} from "./middlewares/logger.js";
 import {errorHandler} from "./middlewares/errorMiddleware.js";
 import {coonectDB} from './config/dbConfig.js'
-import {productsRouter} from "./routes/ProductsRoutes.js";
+import {productsRouter} from "./routes/productsRoutes.js";
+import {reviewRouter} from "./routes/reviewRoutes.js";
 
 dotenv.config();
 coonectDB()
@@ -26,6 +27,8 @@ app.post('/api/test', (req, res) => {
 });
 
 app.use('/api/products', productsRouter)
+
+app.use('/api/reviews', reviewRouter)
 
 app.get('/error', (req, res) => {
     throw new Error('błąd')

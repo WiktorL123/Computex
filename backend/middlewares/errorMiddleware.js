@@ -1,4 +1,5 @@
 export const errorHandler = (err, req, res, next) => {
+    console.error('---------MIDDLEWARE BLEDU------------------')
     console.error(err.stack);
 
     const statusCode = res.statusCode === 200 ? 500 : err.statusCode;

@@ -5,6 +5,7 @@ import {errorHandler} from "./middlewares/errorMiddleware.js";
 import {coonectDB} from './config/dbConfig.js'
 import {productsRouter} from "./routes/productsRoutes.js";
 import {reviewRouter} from "./routes/reviewRoutes.js";
+import {categoriesRouter} from "./routes/categoriesRoutes.js";
 
 dotenv.config();
 coonectDB()
@@ -29,6 +30,8 @@ app.post('/api/test', (req, res) => {
 app.use('/api/products', productsRouter)
 
 app.use('/api/reviews', reviewRouter)
+
+app.use('/api/categories', categoriesRouter)
 
 app.get('/error', (req, res) => {
     throw new Error('błąd')

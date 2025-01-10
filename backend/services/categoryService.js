@@ -36,16 +36,12 @@ export const getCategoryById = async (categoryId) => {
 }
 export const addNewCategory = async (categoryData) => {
     try {
-        const existingCategory = await Category.findOne({ category_id: categoryData.category_id });
-        if (existingCategory) {
-            throw {
-                status: 400,
-                message: `Category with ID ${categoryData.category_id} already exists.`,
-            };
-        }
-
+       console.log("Data received in service:", categoryData);
         const category = new Category(categoryData);
-        await category.save();
+         console.log("Category instance before save:", category);
+            await category.save();
+         console.log("Category saved successfully:", category);
+
         return category;
     } catch (error) {
         throw {
@@ -55,3 +51,20 @@ export const addNewCategory = async (categoryData) => {
         };
     }
 };
+// export const addNewCategory = async (categoryData) => {
+//     try {
+//         console.log("Data received in service:", categoryData);
+//         const category = new Category(categoryData);
+//         console.log("Category instance before save:", category);
+//         await category.save();
+//         console.log("Category saved successfully:", category);
+//         return category;
+//     } catch (error) {
+//         console.error("Error in addNewCategory service:", error.message, error.stack);
+//         throw {
+//             status: 400,
+//             message: "Failed to add category",
+//             details: error.message
+//         };
+//     }
+// };

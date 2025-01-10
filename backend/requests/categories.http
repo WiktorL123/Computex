@@ -4,22 +4,27 @@ POST http://localhost:8080/api/categories
 Content-Type: application/json
 
 {
-
-  "category": {
-    "_id": "64d8aabb1122cc334455cccc",
-    "category_id": 102,
-    "name": "Monitory",
-    "subcategories": [
-      {
-        "subcategory_id": 301,
-        "name": "Monitory Gamingowe",
-        "filters": ["rozdzielczosc", "odswiezanie", "przekatna"]
-      },
-      {
-        "subcategory_id": 302,
-        "name": "Monitory Biznesowe",
-        "filters": ["waga", "pivot", "porty"]
-      }
-    ]
-  }
+  "category_id": 110,
+  "name": "Obudowy",
+  "subcategories": [
+    {
+      "subcategory_id": 309,
+      "name": "ATX",
+      "filters": [
+        "rozmiar",
+        "kompatybilnosc",
+        "wentylacja"
+      ]
+    },
+    {
+      "subcategory_id": 310,
+      "name": "Micro-ATX",
+      "filters": [
+        "rozmiar",
+        "kompatybilnosc",
+        "wentylacja"
+      ]
+    }
+  ]
 }
+

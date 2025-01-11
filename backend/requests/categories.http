@@ -1,6 +1,6 @@
-GET http://localhost:8080/api/categories
+GET http://localhost:8081/api/categories
 ###
-POST http://localhost:8080/api/categories
+POST http://localhost:8081/api/categories
 Content-Type: application/json
 
 {
@@ -27,4 +27,33 @@ Content-Type: application/json
     }
   ]
 }
+###
+PUT http://localhost:8081/api/categories/676ac5d155e1b2c46fba668
+Content-Type: application/json
 
+{
+  "category_id": 111,
+  "name": "laptopy",
+  "subcategories": [
+    {
+      "subcategory_id": 409,
+      "name": "ATX",
+      "filters": [
+        "rozmiar",
+        "kompatybilnosc",
+        "wentylacja"
+      ]
+    },
+    {
+      "subcategory_id": 410,
+      "name": "Micro-ATX",
+      "filters": [
+        "rozmiar",
+        "kompatybilnosc",
+        "wentylacja"
+      ]
+    }
+  ]
+}
+###
+DELETE http://localhost:8081/api/categories/678111159d91058a85c6ba50

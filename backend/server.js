@@ -6,6 +6,7 @@ import {coonectDB} from './config/dbConfig.js'
 import {productsRouter} from "./routes/productsRoutes.js";
 import {reviewRouter} from "./routes/reviewRoutes.js";
 import {categoriesRouter} from "./routes/categoriesRoutes.js";
+import {orderRouter} from "./routes/ordersRoutes.js";
 
 dotenv.config();
 coonectDB()
@@ -32,6 +33,8 @@ app.use('/api/products', productsRouter)
 app.use('/api/reviews', reviewRouter)
 
 app.use('/api/categories', categoriesRouter)
+
+app.use('/api/orders', orderRouter)
 
 app.get('/error', (req, res) => {
     throw new Error('błąd')

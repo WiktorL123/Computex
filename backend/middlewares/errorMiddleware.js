@@ -1,12 +1,18 @@
 export const errorHandler = (err, req, res, next) => {
-    console.error('---------MIDDLEWARE BLEDU------------------')
+    console.error('--------- MIDDLEWARE BLEDU ------------------');
     console.error(err.stack);
 
-    const statusCode = res.statusCode === 200 ? 500 : err.statusCode;
-    res.status(statusCode).json({
-        message: err.message,
+    // Jeśli statusCode nie został ustawiony, domyślnie ustaw 500
+    const statusCode = err.status || 500;
+
+    // Przygotowanie odpowiedzi błędu
+    const errorResponse = {
+        message: err.message || 'Something went wrong',
         statusCode: statusCode,
-        enviorment: process.env.NODE_ENV,
-        stack: process.env.NODE_ENV==='development' ?  err.stack : ''
-    })
-}
+        details: err.details || null, // Szczegóły dostarczone w błędzie lub null
+        enviorment: process.env.NODE_ENV || 'production',
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined // Stacktrace tylko w trybie development
+    };
+
+    res.status(statusCode).json(errorResponse);
+};

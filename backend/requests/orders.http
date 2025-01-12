@@ -1,0 +1,40 @@
+GET http://localhost:8081/api/orders
+###
+GET http://localhost:8081/api/orders/676d564177648b4056eb16e
+###
+POST http://localhost:8081/api/orders
+Content-Type: application/json
+
+
+{
+
+  "user_id": "676d564177648b4056eb16eb",
+  "products": [
+    {
+      "_id": "678317465a9c6c95008b4365",
+      "product_id": "677a94adaeb32b181a1eac2d",
+      "quantity": 8
+    }
+  ],
+  "status": "pending"
+
+
+
+}
+###
+PUT localhost:8081/api/orders/676d54b977648b4056eb16e5
+Content-Type: application/json
+
+{
+      "user_id": "676d564177648b4056eb16eb",
+      "products": [
+        {
+          "_id": "67831bab45550b63ee9d743b",
+          "product_id": "677c78cbca1ba39b8d21aa56",
+          "quantity": 9
+        }
+      ],
+      "status": "pending"
+    }
+###
+DELETE localhost:8081/api/orders/676d54b977648b4056eb16e5

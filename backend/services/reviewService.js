@@ -7,7 +7,7 @@ export const getAllReviews = async () => {
 
         return reviews
     }
-    catch (err){
+    catch (error){
         throw createError(
             500 || error.status,
             'Failed to get reviews' || error.message,
@@ -24,7 +24,7 @@ export const getReviewById = async (id) => {
         }
         return review
 
-    }catch(err){
+    }catch(error){
         if (err.status === 404)throw err
         throw createError(
             500 || error.status,
@@ -44,7 +44,7 @@ export const editReview = async (reviewData) =>{
         await review.save()
         return review
     }
-    catch(err){
+    catch(error){
         throw createError(
             500 || error.status,
             'Failed to update Review' || error.message,
@@ -61,7 +61,7 @@ export const addReview = async (reviewData) =>{
         return newReview
 
     }
-    catch(err){
+    catch(error){
         throw createError(
             500 || error.status,
             'Failed to add `Review`' || error.message,
@@ -79,7 +79,7 @@ export const deleteReview = async (id) =>{
             await review.deleteOne()
             return review
         }
-        catch (err){
+        catch (error){
             throw createError(
                 500 || error.status,
                 'Failed to delete Review' || error.message,

@@ -1,4 +1,5 @@
 import Product from "../models/Product.js";
+import {createError} from "../utils/utils.js";
 
 export const getAllProducts = async () => {
     try {
@@ -13,14 +14,18 @@ export const getProductById = async (id) => {
     try {
         const product = await Product.findById(id);
         if (!product) {
-            throw { status: 404, message: "Product not found" };
+          createError(404, 'Product with id ${id} not found');
         }
         return product;
     } catch (error) {
-        if (error.name === "CastError") {
-            throw { status: 400, message: "Invalid product ID format" };
+        if (error.status === 404) {
+            throw error
         }
-        throw { status: 500, message: "Failed to fetch product", details: error.message };
+        throw createError(
+            500 || error.status,
+            'Failed to get Product' || error.message,
+            error.details || null
+        )
     }
 };
 
@@ -30,10 +35,12 @@ export const addNewProduct = async (productData) => {
         await product.save();
         return product;
     } catch (error) {
-        if (error.name === "ValidationError") {
-            throw { status: 400, message: "Invalid product data", details: error.errors };
-        }
-        throw { status: 500, message: "Failed to add product", details: error.message };
+
+        throw createError(
+            500 || error.status,
+            'Failed to add Product' || error.message,
+            error.details || null
+        )
     }
 };
 
@@ -41,16 +48,18 @@ export const updateProductStock = async (id, stock) => {
     try {
         const product = await Product.findById(id);
         if (!product) {
-            throw { status: 404, message: "Product not found" };
+            throw createError(404, 'Product with id ${id} not found');
         }
         product.stock = stock;
         await product.save();
         return product;
     } catch (error) {
-        if (error.name === "CastError") {
-            throw { status: 400, message: "Invalid product ID format" };
-        }
-        throw { status: 500, message: "Failed to update product stock", details: error.message };
+        if ( error.status === 404 ) throw error
+        throw createError(
+            500 || error.status,
+            'Failed to update Product' || error.message,
+            error.details || null
+        )
     }
 };
 
@@ -58,14 +67,16 @@ export const deleteProduct = async (id) => {
     try {
         const product = await Product.findById(id);
         if (!product) {
-            throw { status: 404, message: "Product not found" };
+            createError(404, 'Product with id ${id} not found');
         }
         await product.deleteOne();
-        return { message: "Product deleted successfully" };
+        return product
     } catch (error) {
-        if (error.name === "CastError") {
-            throw { status: 400, message: "Invalid product ID format" };
-        }
-        throw { status: 500, message: "Failed to delete product", details: error.message };
+       if ( error.status === 404) throw error
+        throw createError(
+            500 || error.status,
+            'Failed to delete Product' || error.message,
+            error.details || null
+        )
     }
 };

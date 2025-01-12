@@ -1,19 +1,18 @@
 import Review from "../models/Review.js";
+import {createError} from "../utils/utils.js";
 
 export const getAllReviews = async () => {
     try{
         const reviews = await Review.find({})
-        if (!reviews || reviews.length === 0) {
-                return []
-        }
+
         return reviews
     }
     catch (err){
-        throw {
-            status: 500,
-            message: `am error has occured:${err.message}`,
-            details: err.stack
-        }
+        throw createError(
+            500 || error.status,
+            'Failed to get reviews' || error.message,
+            error.details || null
+        )
     }
 
 }
@@ -21,17 +20,17 @@ export const getReviewById = async (id) => {
     try {
         const review = await Review.findById(id)
         if (!review){
-            return {}
+           throw createError(404, `Failed to find Review with id ${id} `)
         }
         return review
 
     }catch(err){
-        throw {
-            status: 500,
-            message: `am error has occured:${err.message}`,
-            details: err.stack
-        }
-
+        if (err.status === 404)throw err
+        throw createError(
+            500 || error.status,
+            'Failed to get Review' || error.message,
+            error.details || null
+        )
     }
 }
 export const editReview = async (reviewData) =>{
@@ -39,20 +38,18 @@ export const editReview = async (reviewData) =>{
 
         let review = await Review.findById(reviewData.id)
         if (!review){
-            throw { status: 404, message: "Review not found" };
+           throw createError(404, `Failed to find Review with id ${reviewData.id} `)
         }
         Object.assign(review, reviewData)
-
         await review.save()
-
         return review
     }
     catch(err){
-        throw {
-            status: 500,
-            message: `am error has occured:${err.message}`,
-            details: err.stack
-        }
+        throw createError(
+            500 || error.status,
+            'Failed to update Review' || error.message,
+            error.details || null
+        )
     }
 }
 
@@ -65,27 +62,28 @@ export const addReview = async (reviewData) =>{
 
     }
     catch(err){
-        throw {
-            status: 500,
-            message: `am error has occured: ${err.message}`,
-            details: err.stack
-        }
+        throw createError(
+            500 || error.status,
+            'Failed to add `Review`' || error.message,
+            error.details || null
+        )
     }
 }
 
 export const deleteReview = async (id) =>{
-    try {
-        const review = await Review.findById(id)
-        if (!review){
-            throw { status: 404, message: "Review not found" };
+        try {
+            const review = await Review.findById(id)
+            if (!review){
+               createError(404, `Review with id ${id} not found`)
+            }
+            await review.deleteOne()
+            return review
         }
-        await review.deleteOne()
-        return review
-    }
-    catch (err){
-        throw {
-            status: 500,
-            message: `am error has occured: ${err.message}`,
-            details: err.stack}
+        catch (err){
+            throw createError(
+                500 || error.status,
+                'Failed to delete Review' || error.message,
+                error.details || null
+            )
     }
 }

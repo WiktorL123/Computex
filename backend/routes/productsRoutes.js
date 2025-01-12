@@ -6,17 +6,18 @@ import
     updateProductStock,
     deleteProduct,
 } from "../controllers/productController.js";
+import {validateId} from "../middlewares/validateIdMiddleware.js";
 
 export const productsRouter = express.Router();
 
 
 productsRouter.get('/', getAllProducts )
 
-productsRouter.get('/:id', getProductById)
+productsRouter.get('/:id', validateId('id'), getProductById)
 
 productsRouter.post('/', addNewProduct)
 
-productsRouter.patch('/:id/stock', updateProductStock )
+productsRouter.patch('/:id/stock', validateId('id'), updateProductStock )
 
-productsRouter.delete('/:id', deleteProduct)
+productsRouter.delete('/:id', validateId('id'), deleteProduct)
 

@@ -8,14 +8,9 @@ import
 export const getAllReviews =  async (req, res, next) => {
     try {
         const reviews = await getAllReviewsService()
-        console.log(`getAllReviews: ${reviews}`)
         res.status(200).json(reviews)
     }
     catch (error) {
-        res.status(error.status || 500).json({
-            error: error.message || "An unexpected error occurred",
-            details: error.details || null,
-        });
         next(error)
     }
 }
@@ -25,13 +20,7 @@ export const getReviewById = async (req, res, next) => {
         const review = await getReviewByIdService(id)
         res.status(200).json(review)
     }
-
-
     catch (error) {
-        res.status(error.status || 500).json({
-            error: error.message || "An unexpected error occurred",
-            details: error.details || null,
-        })
          next(error)
     }
 
@@ -40,7 +29,6 @@ export const editReview = async (req, res, next) => {
     try {
         const {id} = req.params
         const reviewData = req.body
-
         reviewData.id = id
         const review = await editReviewService(reviewData)
         res.status(200).json({message: 'updated' + review})
@@ -62,10 +50,6 @@ export const addReview = async (req, res, next) => {
             review: newReview,
         });
     } catch (error) {
-        res.status(error.status || 500).json({
-            error: error.message || "An unexpected error occurred ",
-            details: error.details || null,
-        });
         next(error);
     }
 }
@@ -76,10 +60,7 @@ export const deleteReview = async (req, res, next) => {
         res.status(200).json({message: 'deleted' + review})
     }
     catch (error) {
-        res.status(error.status || 500).json({
-            error: error.message || "An unexpected error occurred",
-            details: error.details || null
-        })
+
         next(error)
     }
 

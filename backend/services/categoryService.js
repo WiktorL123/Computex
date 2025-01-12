@@ -1,4 +1,5 @@
 import {Category} from "../models/Category.js";
+import {createError} from "../utils/utils.js";
 
 export const getAllCategories = async () => {
     try {
@@ -6,11 +7,11 @@ export const getAllCategories = async () => {
         return categories;
     }
     catch (error) {
-        throw {
-            status: 400,
-            message: 'Failed to get All Categories',
-            details: error.message
-        }
+        throw createError(
+            500 || error.status,
+            'Failed to get Categories' || error.message,
+            error.details || null
+        )
     }
 
 }
@@ -18,37 +19,32 @@ export const getCategoryById = async (categoryId) => {
     try {
         const category = await Category.findById(categoryId)
         if (!category) {
-            throw {
-                status: 404,
-                message: 'Category not found.',
-                details: error.message
-            }
+            throw createError(404, `Category with id ${categoryId} not found`)
         }
         return category;
     }
     catch (error) {
-        throw {
-            status: 400,
-            message: `Failed to get category with ID ${categoryId}`,
-            details: error.message
+        if (error.status === 404) {
+            throw error;
         }
+        throw createError(
+            500 || error.status,
+            'Failed to get Category' || error.message,
+            error.details || null
+        )
     }
 }
 export const addNewCategory = async (categoryData) => {
     try {
-       console.log("Data received in service:", categoryData);
-        const category = new Category(categoryData);
-         console.log("Category instance before save:", category);
+            const category = new Category(categoryData);
             await category.save();
-         console.log("Category saved successfully:", category);
-
-        return category;
+            return category;
     } catch (error) {
-        throw {
-            status: 400,
-            message: "Failed to add category",
-            details: error.message
-        };
+        throw createError(
+            500 || error.status,
+            'Failed to add Category' || error.message,
+            error.details || null
+        )
     }
 };
 
@@ -56,18 +52,21 @@ export const updateCategory = async (categoryId, categoryData) => {
     try{
         const category = await Category.findById(categoryId)
         if (!category) {
-            throw {status: 404, message: 'Category not found.', details: error.message}
+            throw createError(404, `Category with id ${categoryId} not found`)
         }
         Object.assign(category, categoryData);
         await category.save()
         return category;
     }
     catch(error){
-        throw {
-            status: 400,
-            message: 'Failed to update category',
-            details: error.message
+        if (error.status === 404) {
+            throw error;
         }
+        throw createError(
+            500 || error.status,
+            'Failed to update Category' || error.message,
+            error.details || null
+        )
     }
 
 }
@@ -76,17 +75,20 @@ export const deleteCategory = async (categoryId) => {
         try{
             const category = await Category.findById(categoryId)
             if (!category) {
-                throw {status: 404, message: 'Category not found.', details: error.message}
+                throw createError(404, `Category with id ${categoryId} not found`)
             }
             await category.deleteOne()
             return category;
         }
         catch(error){
-            throw {
-                status: 400,
-                message: 'Failed to delete category',
-                details: error.message
+            if (error.status === 404) {
+                throw error;
             }
+            throw createError(
+                500 || error.status,
+                'Failed to delete Category' || error.message,
+                error.details || null
+            )
         }
 
     }

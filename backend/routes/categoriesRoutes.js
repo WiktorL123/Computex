@@ -4,16 +4,17 @@ import {getAllCategories,
         addNewCategory,
         updateCategory,
         deleteCategory} from "../controllers/categoryController.js"
+import {validateId} from "../middlewares/validateIdMiddleware.js";
 
 
 export const categoriesRouter =  express.Router();
 
 categoriesRouter.get('/', getAllCategories);
 
-categoriesRouter.get('/:id', getCategoryById );
+categoriesRouter.get('/:id', validateId('id'), getCategoryById );
 
 categoriesRouter.post('/', addNewCategory);
 
-categoriesRouter.put('/:id', updateCategory);
+categoriesRouter.put('/:id', validateId('id'), updateCategory);
 
-categoriesRouter.delete('/:id', deleteCategory);
+categoriesRouter.delete('/:id', validateId('id'), deleteCategory);

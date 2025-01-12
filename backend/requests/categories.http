@@ -28,7 +28,7 @@ Content-Type: application/json
   ]
 }
 ###
-PUT http://localhost:8081/api/categories/676ac5d155e1b2c46fba668
+PUT http://localhost:8081/api/categories/676ac5dd155e1b2c46fba668
 Content-Type: application/json
 
 {
@@ -56,4 +56,4 @@ Content-Type: application/json
   ]
 }
 ###
-DELETE http://localhost:8081/api/categories/678111159d91058a85c6ba50
+DELETE http://localhost:8081/api/categories/676ac5dd155e1b2c46fba668

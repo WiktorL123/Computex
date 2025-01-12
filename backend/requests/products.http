@@ -1,0 +1,48 @@
+GET localhost:8081/api/products
+###
+GET localhost:8081/api/products/
+###
+POST localhost:8081/api/products/
+Content-Type: application/json
+
+{
+
+  "name": "Obudowa komputerowa",
+  "price": 479.99,
+  "category_id": 105,
+  "subcategory_id": 210,
+  "filters": {
+    "rozmiar": "Micro-ATX",
+    "kompatybilnosc": "Płyty mATX, ITX",
+    "wentylacja": "Optymalna"
+  },
+  "description": "Obudowa Komputerowa o nowoczesnym designie.",
+  "stock": 50,
+  "images": [
+    "https://example.com/images/fractal_design_meshify_c.jpg"
+  ]
+}
+###
+PATCH localhost:8081/api/products/677c76d652bdb7521e377abd/stock
+Content-Type: application/json
+
+
+{
+  "_id": "677aec2298dd120b3b966f0",
+  "name": "Obudowa komputerowa",
+  "price": 479.99,
+  "category_id": 105,
+  "subcategory_id": 210,
+  "filters": {
+    "rozmiar": "Micro-ATX",
+    "kompatybilnosc": "Płyty mATX, ITX",
+    "wentylacja": "Optymalna"
+  },
+  "description": "Obudowa Komputerowa o nowoczesnym designie.",
+  "stock": 50,
+  "images": [
+    "https://example.com/images/fractal_design_meshify_c.jpg"
+  ]
+}
+###
+DELETE localhost:8081/api/products/678311fcd8e65093fe63f7fe

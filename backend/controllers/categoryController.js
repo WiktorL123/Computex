@@ -12,7 +12,7 @@ export const getAllCategories = async (req,res, next) => {
     }
     catch (error) {
         next(error)
-        res.status(400 || res.statusCode).json({error: error.message});
+
 
     }
 }

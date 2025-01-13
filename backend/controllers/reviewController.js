@@ -31,7 +31,7 @@ export const editReview = async (req, res, next) => {
         const reviewData = req.body
         reviewData.id = id
         const review = await editReviewService(reviewData)
-        res.status(200).json({message: 'updated' + review})
+        res.status(200).json({message: 'updated', review: review})
     }
     catch (error) {
             res.status(error.status || 500).json({
@@ -57,7 +57,7 @@ export const deleteReview = async (req, res, next) => {
     try {
         const {id} = req.params
         const review = await deleteReviewService(id)
-        res.status(200).json({message: 'deleted' + review})
+        res.status(200).json({message: 'deleted', review: review})
     }
     catch (error) {
 

@@ -1,13 +1,15 @@
-GET localhost:8081/api/products
+GET localhost:4000/api/products
 ###
-GET localhost:8081/api/products/
+
+GET localhost:4000/api/products/678582d72c503f040722ae1a
+
+
 ###
-POST localhost:8081/api/products/
+POST localhost:4000/api/products/
 Content-Type: application/json
 
 {
-
-  "name": "Obudowa komputerowa",
+  "name": "ada",
   "price": 479.99,
   "category_id": 105,
   "subcategory_id": 210,
@@ -21,9 +23,10 @@ Content-Type: application/json
   "images": [
     "https://example.com/images/fractal_design_meshify_c.jpg"
   ]
+
 }
 ###
-PATCH localhost:8081/api/products/677c76d652bdb7521e377abd/stock
+PATCH localhost:4000/api/products/678582d72c503f040722ae1a/stock
 Content-Type: application/json
 
 
@@ -45,4 +48,4 @@ Content-Type: application/json
   ]
 }
 ###
-DELETE localhost:8081/api/products/678311fcd8e65093fe63f7fe
+DELETE localhost:4000/api/products/678582d72c503f040722ae1a

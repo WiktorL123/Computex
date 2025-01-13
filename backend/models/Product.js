@@ -12,7 +12,8 @@ const productSchema = new mongoose.Schema({
     },
     description: {type: String, default: ''},
     stock: {type: Number, default: 0},
-    images: [String]
+    images: [String],
+    sku: {type: String, unique: true},
 }, {timestamps: true, collection: 'Products'});
 
 

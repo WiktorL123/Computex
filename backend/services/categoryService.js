@@ -4,9 +4,15 @@ import {createError} from "../utils/utils.js";
 export const getAllCategories = async () => {
     try {
         const categories = await Category.find({})
+        if (categories.legth===0){
+            throw createError(404, "No category found.");
+        }
         return categories;
     }
     catch (error) {
+        if (error.status === 404) {
+            throw error
+        }
         throw createError(
             500 || error.status,
             'Failed to get Categories' || error.message,
@@ -37,16 +43,23 @@ export const getCategoryById = async (categoryId) => {
 export const addNewCategory = async (categoryData) => {
     try {
             const category = new Category(categoryData);
+            const existingCategory = Category.find({name: categoryData.name})
+        if (existingCategory.length>0) {
+            throw createError(400, `Category with name ${categoryData.name} already exists`)
+        }
             await category.save();
             return category;
     } catch (error) {
+        if (error.status === 400) {
+            throw error;
+        }
         throw createError(
             500 || error.status,
             'Failed to add Category' || error.message,
             error.details || null
         )
     }
-};
+}
 
 export const updateCategory = async (categoryId, categoryData) => {
     try{

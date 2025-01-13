@@ -26,7 +26,7 @@ export const getProductById = async (req, res, next) => {
 
         next(error);
     }
-};
+}
 
 export const addNewProduct = async (req, res, next) => {
     try {

@@ -3,11 +3,13 @@ import {createError} from "../utils/utils.js";
 export const getOrders = async () => {
     try {
         const orders = await Order.find()
+        if (orders.length ===0)  throw createError(404, 'no orders found');
         console.log("orders", orders)
         return orders;
 
     }
     catch (error) {
+        if (error.status === 404) throw error;
         throw createError(
             500 || error.status,
             'Failed to get Orders' || error.message,
@@ -35,6 +37,7 @@ export const getOrderById = async (id) => {
 export const createOrder = async (order) => {
     try {
         const newOrder = new Order(order);
+
         return await newOrder.save();
     } catch (err) {
         throw createError(

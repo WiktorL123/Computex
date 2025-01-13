@@ -18,21 +18,25 @@ export const getAllReviews = async () => {
 }
 export const getReviewById = async (id) => {
     try {
-        const review = await Review.findById(id)
-        if (!review){
-           throw createError(404, `Failed to find Review with id ${id} `)
-        }
-        return review
+        const review = await Review.findById(id);
+        if (!review) {
 
-    }catch(error){
-        if (err.status === 404)throw err
+            throw createError(404, `Failed to find Review with id ${id}`);
+        }
+        return review;
+    } catch (error) {
+
+        if (error.status === 404) {
+            throw error;
+        }
         throw createError(
-            500 || error.status,
-            'Failed to get Review' || error.message,
-            error.details || null
-        )
+            500,
+            'Failed to get Review',
+            error.message || null
+        );
     }
-}
+};
+
 export const editReview = async (reviewData) =>{
     try {
 
@@ -45,6 +49,9 @@ export const editReview = async (reviewData) =>{
         return review
     }
     catch(error){
+        if (error.status === 404) throw err
+
+
         throw createError(
             500 || error.status,
             'Failed to update Review' || error.message,
@@ -64,7 +71,7 @@ export const addReview = async (reviewData) =>{
     catch(error){
         throw createError(
             500 || error.status,
-            'Failed to add `Review`' || error.message,
+             error.message,
             error.details || null
         )
     }
@@ -74,12 +81,16 @@ export const deleteReview = async (id) =>{
         try {
             const review = await Review.findById(id)
             if (!review){
-               createError(404, `Review with id ${id} not found`)
+               throw createError(400, `Review with id ${id} not found`)
             }
             await review.deleteOne()
             return review
         }
         catch (error){
+            if (error.status === 400) {
+                throw error;
+            }
+
             throw createError(
                 500 || error.status,
                 'Failed to delete Review' || error.message,

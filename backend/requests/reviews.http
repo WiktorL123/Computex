@@ -1,28 +1,43 @@
-GET localhost:8081/api/reviews
+GET localhost:4000/api/reviews
 ###
-GET localhost:8081/api/reviews/677ee626b8f43460d8d02a7
+GET localhost:4000/api/reviews/677ee626b8f43460d8d02a7
 ###
-PUT localhost:8081/api/reviews/677ee626b8f430460d8d02a7/edit
+PUT localhost:4000/api/reviews/677ee626b8f430460d8d02a7/edit
 Content-Type: application/json
 
 {
-  "product_id": "64d8aabb1122cc34455aaaa",
-  "user_id": "64d8aabb1122cc334455bbbb",
-  "rating": 4.5,
-  "comment": "dobry produkt!"
+  "product_id": "677a94adaeb32b181a1eac2e",
+  "user_id": "676d564177648b4056eb16eb",
+  "rating": 5,
+  "comment": "sfadadsfs"
 
 }
 
 ###
-POST localhost:8081/api/reviews
+###poprawne id
+POST localhost:4000/api/reviews
 Content-Type: application/json
 
 {
-  "product_id": "64d8aabb1122cc334455aaaa",
-  "user_id": "64d8aabb1122cc334455bbbb",
-  "rating": 4.5,
-  "comment": "dobry produkt!"
+  "product_id": "677a94adaeb32b181a1eac2e",
+  "user_id": "676d564177648b4056eb16eb",
+  "rating": 5,
+  "comment": "sfsfs"
+
 }
 ###
+###niepoprawne id
+POST localhost:4000/api/reviews
+Content-Type: application/json
 
-DELETE localhost:8081/api/reviews/677ef897130c9bce6c0fafc
+{
+  "product_id": "677a94adaeb32b181a1eac2",
+  "user_id": "676d564177648b4056eb16e",
+  "rating": 5,
+  "comment": "sfsfs"
+
+}
+
+###
+
+DELETE localhost:4000/api/reviews/6785801980c9a214d3971485

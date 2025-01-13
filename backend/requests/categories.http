@@ -1,11 +1,11 @@
-GET http://localhost:8081/api/categories
+GET http://localhost:4000/api/categories
 ###
-POST http://localhost:8081/api/categories
+POST  http://localhost:4000/api/categories
 Content-Type: application/json
 
 {
   "category_id": 110,
-  "name": "Obudowy",
+  "name": 12,
   "subcategories": [
     {
       "subcategory_id": 309,
@@ -28,7 +28,7 @@ Content-Type: application/json
   ]
 }
 ###
-PUT http://localhost:8081/api/categories/676ac5dd155e1b2c46fba668
+PUT http://localhost:4000/api/categories/676ac5dd155e1b2c46fba668
 Content-Type: application/json
 
 {
@@ -56,4 +56,4 @@ Content-Type: application/json
   ]
 }
 ###
-DELETE http://localhost:8081/api/categories/676ac5dd155e1b2c46fba668
+DELETE http://localhost:4000/api/categories/6785686653113d8369890541

@@ -14,7 +14,7 @@ export const getProductById = async (id) => {
     try {
         const product = await Product.findById(id);
         if (!product) {
-          createError(404, 'Product with id ${id} not found');
+          throw  createError(404, 'Product with id ${id} not found');
         }
         return product;
     } catch (error) {
@@ -27,14 +27,20 @@ export const getProductById = async (id) => {
             error.details || null
         )
     }
-};
+}
 
 export const addNewProduct = async (productData) => {
     try {
         const product = new Product(productData);
+
+        const existingProduct = await Product.find({
+            name: productData.name
+        })
+        if (existingProduct.length>0) throw createError(400, 'Product already exists');
         await product.save();
         return product;
     } catch (error) {
+        if (error.status === 400) throw error
 
         throw createError(
             500 || error.status,

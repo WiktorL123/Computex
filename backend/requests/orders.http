@@ -1,8 +1,8 @@
-GET http://localhost:8081/api/orders
+GET http://localhost:4000/api/orders
 ###
-GET http://localhost:8081/api/orders/676d564177648b4056eb16e
+GET http://localhost:4000/api/orders/6785813e1e9d6ea3e46807c9
 ###
-POST http://localhost:8081/api/orders
+POST http://localhost:4000/api/orders
 Content-Type: application/json
 
 
@@ -16,13 +16,13 @@ Content-Type: application/json
       "quantity": 8
     }
   ],
-  "status": "pending"
+  "status": "completed"
 
 
 
 }
 ###
-PUT localhost:8081/api/orders/676d54b977648b4056eb16e5
+PUT localhost:4000/api/orders/6785813e1e9d6ea3e46807c9
 Content-Type: application/json
 
 {
@@ -37,4 +37,4 @@ Content-Type: application/json
       "status": "pending"
     }
 ###
-DELETE localhost:8081/api/orders/676d54b977648b4056eb16e5
+DELETE localhost:4000/api/orders/6785813e1e9d6ea3e46807c9

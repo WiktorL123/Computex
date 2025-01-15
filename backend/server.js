@@ -11,6 +11,7 @@ import { reviewRouter } from "./routes/reviewRoutes.js";
 import { categoriesRouter } from "./routes/categoriesRoutes.js";
 import { orderRouter } from "./routes/ordersRoutes.js";
 import {usersRouter} from "./routes/userRoutes.js";
+import {paymentsRouter} from "./routes/paymentsRoutes.js";
 
 dotenv.config();
 coonectDB();
@@ -45,6 +46,8 @@ app.use('/api/reviews', reviewRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/users', usersRouter);
+app.use('/payments', paymentsRouter)
+
 
 app.get('/error', (req, res) => {
     throw new Error('błąd');

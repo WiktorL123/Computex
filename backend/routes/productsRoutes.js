@@ -5,7 +5,7 @@ import
     addNewProduct,
     updateProductStock,
     deleteProduct,
-    getFilteredProducts
+    // getFilteredProducts
 } from "../controllers/productController.js";
 
 import {addSkuToRequest} from "../middlewares/addSkuToRequest.js";
@@ -17,7 +17,7 @@ export const productsRouter = express.Router();
 
 productsRouter.get('/', getAllProducts )
 
-productsRouter.get('/search', getFilteredProducts)
+// productsRouter.get('/search', getFilteredProducts)
 
 productsRouter.get('/:id', validateIdParam, getProductById)
 

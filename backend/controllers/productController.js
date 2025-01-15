@@ -85,36 +85,36 @@ export const deleteProduct = async (req, res, next) => {
     }
 };
 
-export const getFilteredProducts = async (req, res, next) => {
-    const { category_id, subcategory_id } = req.query;
-
-    if (!category_id) {
-        return res.status(400).json({
-            message: "category_id is required",
-        });
-    }
-
-    try {
-        const filter = { category_id: Number(category_id) };
-        if (subcategory_id) {
-            filter["subcategory_id"] = Number(subcategory_id);
-        }
-
-        const products = await Product.find(filter);
-        const category = await Category.findOne({ category_id: Number(category_id) });
-
-        if (!category) {
-            return res.status(404).json({
-                message: `Category with ID ${category_id} not found`,
-            });
-        }
-
-        res.status(200).json({
-            message: "Filtered products and category fetched successfully",
-            products,
-            category,
-        });
-    } catch (error) {
-        next(createError(500, "Failed to fetch filtered products and category", error.message));
-    }
-};
+// export const getFilteredProducts = async (req, res, next) => {
+//     const { category_id, subcategory_id } = req.query;
+//
+//     if (!category_id) {
+//         return res.status(400).json({
+//             message: "category_id is required",
+//         });
+//     }
+//
+//     try {
+//         const filter = { category_id: Number(category_id) };
+//         if (subcategory_id) {
+//             filter["subcategory_id"] = Number(subcategory_id);
+//         }
+//
+//         const products = await Product.find(filter);
+//         const category = await Category.findOne({ category_id: Number(category_id) });
+//
+//         if (!category) {
+//             return res.status(404).json({
+//                 message: `Category with ID ${category_id} not found`,
+//             });
+//         }
+//
+//         res.status(200).json({
+//             message: "Filtered products and category fetched successfully",
+//             products,
+//             category,
+//         });
+//     } catch (error) {
+//         next(createError(500, "Failed to fetch filtered products and category", error.message));
+//     }
+// };

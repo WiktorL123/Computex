@@ -2,7 +2,6 @@ import { Order } from "../models/Order.js";
 import { Product } from "../models/Product.js";
 import { createError } from "../utils/utils.js";
 
-// Pobranie wszystkich zamówień
 export const getOrders = async (req, res, next) => {
     try {
         const orders = await Order.find();
@@ -15,7 +14,6 @@ export const getOrders = async (req, res, next) => {
     }
 };
 
-// Pobranie zamówienia po ID
 export const getOrderById = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -77,7 +75,6 @@ export const createOrder = async (req, res, next) => {
     }
 };
 
-// Aktualizacja zamówienia
 export const updateOrder = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -100,7 +97,6 @@ export const updateOrder = async (req, res, next) => {
     }
 };
 
-// Usunięcie zamówienia
 export const deleteOrder = async (req, res, next) => {
     try {
         const { id } = req.params;

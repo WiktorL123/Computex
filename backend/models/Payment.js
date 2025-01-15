@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const paymentsSchema = new mongoose.Schema({
+const paymentSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -14,8 +14,20 @@ const paymentsSchema = new mongoose.Schema({
     payment_method: {
         type: {
             type: String,
-            enum: ["completed", "pending", "failed"],
+            enum: ["blik", "credit_card", "paypal"],
             default: "pending"
+        },
+        amount: {
+            type: Number,
+            min: 0
+        },
+        currency: {
+            type: String,
+            enum: ["eu", "usd", "pln", "gb"],
+            required: true
         }
+
     }
-})
+},{timestamps: true, collection: 'Payments'});
+
+const Payment = mongoose.model("Payment", paymentSchema);

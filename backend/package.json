@@ -24,6 +24,7 @@
     "mongoose": "^8.9.2",
     "morgan": "^1.10.0",
     "morgan-body": "^2.6.9",
-    "nodemailer": "^6.9.16"
+    "nodemailer": "^6.9.16",
+    "stripe": "^17.5.0"
   }
 }

@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import {addressSchema} from "./User.js";
+import calculateTotalPrize from "../middlewares/calculateTotalPrize.js";
 
-const OrderSchema = new mongoose.Schema({
+const orderSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -24,7 +26,17 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         enum: ["pending", "completed", "rejected"],
         default: "pending"
+    },
+    totalPrice: {
+        type: Number,
+        min: 1
+    },
+    shippingAddress: {
+        type: addressSchema,
+        default: {}
+
     }
 }, { timestamps: true, collection: 'Orders' });
 
-export const Order = mongoose.model("Order", OrderSchema);
+
+export const Order = mongoose.model("Order", orderSchema);

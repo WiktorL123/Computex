@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
+import mongoose from "mongoose";
 import { fileURLToPath } from 'url';
 import { logger } from "./middlewares/logger.js";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
@@ -9,6 +10,7 @@ import { productsRouter } from "./routes/productsRoutes.js";
 import { reviewRouter } from "./routes/reviewRoutes.js";
 import { categoriesRouter } from "./routes/categoriesRoutes.js";
 import { orderRouter } from "./routes/ordersRoutes.js";
+import {usersRouter} from "./routes/userRoutes.js";
 
 dotenv.config();
 coonectDB();
@@ -37,10 +39,12 @@ app.post('/api/test', (req, res) => {
     });
 });
 
+
 app.use('/api/products', productsRouter);
 app.use('/api/reviews', reviewRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/orders', orderRouter);
+app.use('/api/users', usersRouter);
 
 app.get('/error', (req, res) => {
     throw new Error('błąd');

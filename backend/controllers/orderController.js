@@ -1,57 +1,122 @@
-import {getOrders as getOrdersService,
-        getOrderById as getOrderByIdService,
-        createOrder as createOrderService,
-        updateOrder as updateOrderService,
-        deleteOrder as deleteOrderService} from "../services/orderService.js";
-export const getOrders = async (req, res, next) => {
-    try{
-        const orders = await getOrdersService();
-        res.status(200).json({message: 'orders: ', orders});
-    }
-    catch(err){
-        next(err);
-    }
+import { Order } from "../models/Order.js";
+import { Product } from "../models/Product.js";
+import { createError } from "../utils/utils.js";
 
-}
+// Pobranie wszystkich zamówień
+export const getOrders = async (req, res, next) => {
+    try {
+        const orders = await Order.find();
+        if (!orders.length) {
+            return res.status(404).json({ message: "No orders found" });
+        }
+        res.status(200).json({ message: "Orders retrieved successfully", orders });
+    } catch (error) {
+        next(createError(500, "Failed to fetch orders", error.message));
+    }
+};
+
+// Pobranie zamówienia po ID
 export const getOrderById = async (req, res, next) => {
     try {
-        const {id} = req.params;
-        const order = await getOrderByIdService(id);
-        res.status(200).json(order);
+        const { id } = req.params;
+        const order = await Order.findById(id);
+        if (!order) {
+            return res.status(404).json({ message: `Order with id ${id} not found` });
+        }
+        res.status(200).json({ message: "Order retrieved successfully", order });
+    } catch (error) {
+        next(createError(500, "Failed to fetch order", error.message));
     }
-    catch(err){
-        next(err);
-    }
-}
+};
+
+// Tworzenie zamówienia
 export const createOrder = async (req, res, next) => {
     try {
-        const order = req.body;
-        const newOrder = await createOrderService(order);
-        res.status(200).json({message: 'order created', order: newOrder});
+        const { user_id, products, shippingAddress, status = "pending" } = req.body;
+
+        if (!user_id || !products || !products.length) {
+            return res.status(400).json({
+                message: "User ID and products are required, and products cannot be empty",
+            });
+        }
+
+        if (!shippingAddress || !shippingAddress.street || !shippingAddress.city || !shippingAddress.country || !shippingAddress.zip_code) {
+            return res.status(400).json({
+                message: "Valid shipping address is required",
+            });
+        }
+
+        const productPrices = await Promise.all(
+            products.map(async ({ product_id, quantity }) => {
+                const product = await Product.findById(product_id);
+                if (!product) {
+                    throw createError(404, `Product with ID ${product_id} not found`);
+                }
+                return product.price * quantity;
+            })
+        );
+
+        const totalPrice = productPrices.reduce((acc, price) => acc + price, 0);
+
+        const newOrder = new Order({
+            user_id,
+            products,
+            status,
+            shippingAddress,
+            totalPrice,
+        });
+
+        await newOrder.save();
+
+        res.status(201).json({
+            message: "Order created successfully",
+            order: newOrder,
+        });
+    } catch (error) {
+        next(createError(500, "Failed to create order", error.message));
     }
-    catch(err){
-        next(err);
-    }
-}
+};
+
+// Aktualizacja zamówienia
 export const updateOrder = async (req, res, next) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const orderData = req.body;
-        const newOrder = await updateOrderService(id, orderData);
-        res.status(200).json({message: 'order updated', order: newOrder});
+
+        const order = await Order.findById(id);
+        if (!order) {
+            return res.status(404).json({ message: `Order with id ${id} not found` });
+        }
+
+        Object.assign(order, orderData);
+        await order.save();
+
+        res.status(200).json({
+            message: "Order updated successfully",
+            order,
+        });
+    } catch (error) {
+        next(createError(500, "Failed to update order", error.message));
     }
-    catch(error){
-        next(error);
-    }
-}
+};
+
+// Usunięcie zamówienia
 export const deleteOrder = async (req, res, next) => {
     try {
-        const {id} = req.params;
-        const order = await deleteOrderService(id);
-        res.status(200).json({message: 'order deleted', order});
-    }
-    catch(err){
-        next(err);
-    }
+        const { id } = req.params;
 
-}
+        const order = await Order.findById(id);
+        if (!order) {
+            return res.status(404).json({ message: `Order with id ${id} not found` });
+        }
+
+        await order.deleteOne();
+
+        res.status(200).json({
+            message: "Order deleted successfully",
+            order,
+        });
+    } catch (error) {
+        next(createError(500, "Failed to delete order", error.message));
+    }
+};

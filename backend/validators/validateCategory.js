@@ -1,15 +1,26 @@
 import {body} from "express-validator";
 
 export const validateCategory = [
-    body("subcategory_id")
+    body("category_id")
         .isNumeric()
-        .withMessage("Subcategory ID must be a numeric value."),
+        .withMessage("Category ID must be a numeric value."),
     body("name")
         .isString()
         .withMessage("Category name must be a string.")
         .notEmpty()
         .withMessage("Category name cannot be empty."),
-    body("filters")
+    body("subcategories")
+        .isArray({ min: 1 })
+        .withMessage("Subcategories must be a non-empty array."),
+    body("subcategories.*.subcategory_id")
+        .isNumeric()
+        .withMessage("Subcategory ID must be a numeric value."),
+    body("subcategories.*.name")
+        .isString()
+        .withMessage("Subcategory name must be a string.")
+        .notEmpty()
+        .withMessage("Subcategory name cannot be empty."),
+    body("subcategories.*.filters")
         .isArray({ min: 1 })
         .withMessage("Filters must be a non-empty array.")
         .custom((filters) => {
@@ -18,12 +29,4 @@ export const validateCategory = [
             }
             return true;
         }),
-    body("createdAt")
-        .optional()
-        .isISO8601()
-        .withMessage("createdAt must be a valid ISO8601 date."),
-    body("updatedAt")
-        .optional()
-        .isISO8601()
-        .withMessage("updatedAt must be a valid ISO8601 date."),
 ];

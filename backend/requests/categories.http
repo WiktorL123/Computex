@@ -1,31 +1,36 @@
 GET http://localhost:4000/api/categories
 ###
+GET http://localhost:4000/api/categories/676ac5dd155e1b2c46fba669
+###
 POST  http://localhost:4000/api/categories
 Content-Type: application/json
 
 {
-  "category_id": 110,
-  "name": 12,
-  "subcategories": [
-    {
-      "subcategory_id": 309,
-      "name": "ATX",
-      "filters": [
-        "rozmiar",
-        "kompatybilnosc",
-        "wentylacja"
-      ]
-    },
-    {
-      "subcategory_id": 310,
-      "name": "Micro-ATX",
-      "filters": [
-        "rozmiar",
-        "kompatybilnosc",
-        "wentylacja"
-      ]
-    }
-  ]
+  "category": {
+    "category_id": 106,
+    "name": "Zasilacze",
+    "subcategories": [
+      {
+        "subcategory_id": 211,
+        "name": "Modularne",
+        "filters": [
+          "moc",
+          "certyfikat",
+          "chlodzenie"
+        ]
+      },
+      {
+
+        "subcategory_id": 212,
+        "name": "Nie modularne",
+        "filters": [
+          "moc",
+          "certyfikat",
+          "chlodzenie"
+        ]
+      }
+    ]
+  }
 }
 ###
 PUT http://localhost:4000/api/categories/676ac5dd155e1b2c46fba668

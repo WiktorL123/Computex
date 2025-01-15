@@ -4,19 +4,19 @@ import {getAllCategories,
         addNewCategory,
         updateCategory,
         deleteCategory} from "../controllers/categoryController.js"
-import {validateId} from "../middlewares/validateIdMiddleware.js";
 import {handleValidationErrors} from "../middlewares/handleValidationErrors.js";
 import {validateCategory} from "../validators/validateCategory.js";
+import {validateIdParam} from "../validators/validateIdParam.js";
 
 
 export const categoriesRouter =  express.Router();
 
 categoriesRouter.get('/', getAllCategories);
 
-categoriesRouter.get('/:id', validateId('id'), getCategoryById );
+categoriesRouter.get('/:id',  validateIdParam, handleValidationErrors, getCategoryById );
 
 categoriesRouter.post('/', validateCategory, handleValidationErrors, addNewCategory);
 
-categoriesRouter.put('/:id', handleValidationErrors, validateCategory, validateId('id'), updateCategory);
+categoriesRouter.put('/:id',validateCategory, validateIdParam, handleValidationErrors, updateCategory);
 
-categoriesRouter.delete('/:id', validateId('id'), deleteCategory);
+categoriesRouter.delete('/:id', validateIdParam, handleValidationErrors, deleteCategory);

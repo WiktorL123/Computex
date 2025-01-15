@@ -4,7 +4,7 @@ import {createError} from "../utils/utils.js";
 export const getAllCategories = async () => {
     try {
         const categories = await Category.find({})
-        if (categories.legth===0){
+        if (categories.length===0){
             throw createError(404, "No category found.");
         }
         return categories;

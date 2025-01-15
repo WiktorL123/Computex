@@ -3,15 +3,16 @@ import {getOrders, getOrderById, createOrder, updateOrder, deleteOrder} from "..
 import {validateId} from "../middlewares/validateIdMiddleware.js";
 import {validateOrder} from "../validators/validateOrder.js";
 import {handleValidationErrors} from "../middlewares/handleValidationErrors.js";
+import {validateIdParam} from "../validators/validateIdParam.js";
 
 export const orderRouter = express.Router();
 
 orderRouter.get('/', getOrders);
 
-orderRouter.get('/:id', validateId('id'), getOrderById);
+orderRouter.get('/:id', validateIdParam, getOrderById);
 
 orderRouter.post('/', validateOrder, handleValidationErrors, createOrder)
 
-orderRouter.put('/:id', validateOrder, handleValidationErrors, validateId('id'), updateOrder )
+orderRouter.put('/:id', validateOrder, handleValidationErrors, validateIdParam, updateOrder )
 
-orderRouter.delete('/:id', validateId('id'), deleteOrder);
+orderRouter.delete('/:id', validateIdParam, deleteOrder);

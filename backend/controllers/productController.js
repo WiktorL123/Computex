@@ -3,7 +3,7 @@ import {
     getProductById as getProductByIdService,
     addNewProduct as addNewProductsService,
     updateProductStock as updateProductStockService,
-    deleteProduct as deleteProductService,
+    deleteProduct as deleteProductService, getFilteredProductsAndCategory
 } from "../services/productsService.js";
 
 
@@ -64,4 +64,27 @@ export const deleteProduct = async (req, res, next) => {
         next(error);
     }
 };
+export const getFilteredProducts = async (req, res, next) => {
+    const { category_id, subcategory_id } = req.query;
 
+    if (!category_id) {
+        return res.status(400).json({
+            message: "category_id is required",
+        });
+    }
+
+    try {
+        const categoryId = Number(category_id);
+        const subcategoryId = subcategory_id ? Number(subcategory_id) : null;
+
+        const { products, category } = await getFilteredProductsAndCategory(categoryId, subcategoryId);
+
+        res.status(200).json({
+            message: "Filtered products and category fetched successfully",
+            products,
+            category,
+        });
+    } catch (error) {
+        next(error);
+    }
+};

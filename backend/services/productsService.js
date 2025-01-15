@@ -1,5 +1,6 @@
-import Product from "../models/Product.js";
+import {Product} from "../models/Product.js";
 import {createError} from "../utils/utils.js";
+import {Category} from "../models/Category.js";
 
 export const getAllProducts = async () => {
     try {
@@ -84,5 +85,29 @@ export const deleteProduct = async (id) => {
             'Failed to delete Product' || error.message,
             error.details || null
         )
+    }
+};
+export const getFilteredProductsAndCategory = async (categoryId, subcategoryId = null) => {
+    try {
+        const filter = { category_id: categoryId };
+        if (subcategoryId) {
+            filter.subcategory_id = subcategoryId;
+        }
+
+        const products = await Product.find(filter);
+
+        const category = await Category.findOne({ category_id: categoryId });
+
+        if (!category) {
+            throw createError(404, `Category with ID ${categoryId} not found`);
+        }
+
+        return { products, category };
+    } catch (error) {
+        throw createError(
+            error.status || 500,
+            "Failed to fetch filtered products and category",
+            error.message || null
+        );
     }
 };

@@ -7,13 +7,14 @@ import {deleteReview} from "../controllers/reviewController.js"
 import {validateId} from "../middlewares/validateIdMiddleware.js";
 import {validateReview} from "../validators/validateReview.js";
 import {handleValidationErrors} from "../middlewares/handleValidationErrors.js";
+import {validateIdParam} from "../validators/validateIdParam.js";
 export const reviewRouter = express.Router();
 
 reviewRouter.get('/', getAllReviews )
 
-reviewRouter.get('/:id', validateId('id'),  getReviewById)
+reviewRouter.get('/:id', validateIdParam,  getReviewById)
 
-reviewRouter.put('/:id/edit', validateReview, handleValidationErrors, validateId('id'), editReview)
+reviewRouter.put('/:id/edit', validateReview, handleValidationErrors, validateIdParam, editReview)
 
 reviewRouter.post('/', validateReview, handleValidationErrors,  addReview)
 

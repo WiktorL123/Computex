@@ -15,7 +15,7 @@ const paymentSchema = new mongoose.Schema({
         type: {
             type: String,
             enum: ["blik", "credit_card", "paypal"],
-            default: "pending"
+            default: "credit_card"
         },
         amount: {
             type: Number,
@@ -23,11 +23,21 @@ const paymentSchema = new mongoose.Schema({
         },
         currency: {
             type: String,
-            enum: ["eu", "usd", "pln", "gb"],
-            required: true
-        }
+            enum: ["eur", "usd", "pln", "gbp"],
+            default: "usd"
+        },
+        stripe_payment_id: {
+            type: String,
+            default: "",
+            unique: true,
+        },
+        status: {
+            type: String,
+            enum: ["succeeded", "failed", "requires_action"],
+            default: "requires_action",
+        },
 
     }
 },{timestamps: true, collection: 'Payments'});
 
-const Payment = mongoose.model("Payment", paymentSchema);
+export const Payment = mongoose.model("Payment", paymentSchema);

@@ -27,7 +27,21 @@ export const getOrderById = async (req, res, next) => {
     }
 };
 
-// Tworzenie zamówienia
+
+export const getOrdersByUserId = async (req, res, next) => {
+    try {
+        const {userId} = req.params;
+        const orders = await Order.find({user_id: userId})
+        if (!orders.length) {
+            return res.status(404).json({ message: `Order with id ${userId} not found` });
+        }
+        res.status(200).json({ message: "Order retrieved successfully", orders });
+    }
+    catch (error) {
+        next(createError(500, "Failed to fetch orders", error.message));
+    }
+}
+
 export const createOrder = async (req, res, next) => {
     try {
         const { user_id, products, shippingAddress, status = "pending" } = req.body;
@@ -115,4 +129,4 @@ export const deleteOrder = async (req, res, next) => {
     } catch (error) {
         next(createError(500, "Failed to delete order", error.message));
     }
-};
+}

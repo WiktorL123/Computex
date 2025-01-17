@@ -46,7 +46,7 @@ app.use('/api/reviews', reviewRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/users', usersRouter);
-app.use('/payments', paymentsRouter)
+app.use('/api/payments', paymentsRouter)
 
 
 app.get('/error', (req, res) => {

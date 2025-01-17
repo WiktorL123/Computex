@@ -1,0 +1,9 @@
+POST localhost:4000/api/payments
+Content-Type: application/json
+
+{
+  "userId": "64b8f5c2d6a08b2f5c9e8c4e",
+  "orderId": "67831ae745550b63ee9d7431",
+  "amount": 100.50,
+  "currency": "usd"
+}

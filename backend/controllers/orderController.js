@@ -6,7 +6,7 @@ export const getOrders = async (req, res, next) => {
     try {
         const orders = await Order.find();
         if (!orders.length) {
-            return res.status(404).json({ message: "No orders found" });
+            return res.status(404).json({ message: "No orders found", orders });
         }
         res.status(200).json({ message: "Orders retrieved successfully", orders });
     } catch (error) {
@@ -17,9 +17,9 @@ export const getOrders = async (req, res, next) => {
 export const getOrderById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const order = await Order.findById(id);
+        const order = await Order.findOne({_id: id});
         if (!order) {
-            return res.status(404).json({ message: `Order with id ${id} not found` });
+            return res.status(404).json({ message: `Order with id ${id} not found`, order });
         }
         res.status(200).json({ message: "Order retrieved successfully", order });
     } catch (error) {

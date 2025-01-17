@@ -10,7 +10,7 @@ export const orderRouter = express.Router();
 
 orderRouter.get('/', getOrders);
 
-orderRouter.get('/:id', validateIdParam, getOrderById);
+orderRouter.get('/:id', getOrderById);
 
 orderRouter.post('/', validateOrder, handleValidationErrors, calculateTotalPrice, createOrder)
 

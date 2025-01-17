@@ -30,8 +30,8 @@ export const addReview = async (req, res, next) => {
     try {
         const reviewData = req.body;
         const reviewAddedByUser = await Review.find({user_id: reviewData.userId})
-        if (reviewAddedByUser) {
-            res.status(400).send({error: `User can add only one review`});
+        if (reviewAddedByUser.length) {
+            res.status(400).send({error: `User can add only one review`, reviewAddedByUser: reviewAddedByUser});
         }
         const newReview = new Review(reviewData);
         await newReview.save();

@@ -18,9 +18,7 @@ export const orderRouter = express.Router();
 
 orderRouter.get('/', getOrders);
 
-orderRouter.get('/:id', validateIdParam, handleValidationErrors, getOrderById);
-
-orderRouter.get('/:userId', validateIdParam, handleValidationErrors, getOrdersByUserId);
+orderRouter.get('/:id', getOrderById);
 
 orderRouter.post('/', validateOrder, handleValidationErrors, calculateTotalPrice, createOrder)
 

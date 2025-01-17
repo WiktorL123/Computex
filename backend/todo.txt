@@ -1,0 +1,4 @@
+TODO: produkty  - PUT
+TODO: model notifications i discounts (urposzoczona logika)
+TODO: logowanie rejestracja autentykacja tokenem jwt - zabezpieczenie tras
+TODO: ADMIN i jego trasy - przesienie niektorych operacji na admina

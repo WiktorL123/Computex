@@ -15,8 +15,8 @@ categoriesRouter.get('/', getAllCategories);
 
 categoriesRouter.get('/:id',  validateIdParam, handleValidationErrors, getCategoryById );
 
-categoriesRouter.post('/', validateCategory, handleValidationErrors, addNewCategory);
+categoriesRouter.post('/', addNewCategory);
 
-categoriesRouter.put('/:id',validateCategory, validateIdParam, handleValidationErrors, updateCategory);
+categoriesRouter.put('/:id', validateIdParam, handleValidationErrors, updateCategory);
 
 categoriesRouter.delete('/:id', validateIdParam, handleValidationErrors, deleteCategory);

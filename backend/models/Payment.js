@@ -12,32 +12,30 @@ const paymentSchema = new mongoose.Schema({
         required: true
     },
     payment_method: {
-        type: {
-            type: String,
-            enum: ["blik", "credit_card", "paypal"],
-            default: "credit_card"
-        },
-        amount: {
-            type: Number,
-            min: 0
-        },
-        currency: {
-            type: String,
-            enum: ["eur", "usd", "pln", "gbp"],
-            default: "usd"
-        },
-        stripe_payment_id: {
-            type: String,
-            default: "",
-            unique: true,
-        },
-        status: {
-            type: String,
-            enum: ["succeeded", "failed", "requires_action"],
-            default: "requires_action",
-        },
-
-    }
-},{timestamps: true, collection: 'Payments'});
+        type: String,
+        enum: ["blik", "credit_card", "paypal"],
+        default: "credit_card"
+    },
+    amount: {
+        type: Number,
+        required: true,
+        min: 0
+    },
+    currency: {
+        type: String,
+        enum: ["eur", "usd", "pln", "gbp"],
+        default: "usd"
+    },
+    // stripe_payment_id: {
+    //     type: String,
+    //     unique: true,
+    //     required: true
+    // },
+    status: {
+        type: String,
+        enum: ["succeeded", "failed", "requires_action", "requires_payment_method"],
+        default: "requires_action",
+    },
+}, { timestamps: true, collection: 'Payments' });
 
 export const Payment = mongoose.model("Payment", paymentSchema);

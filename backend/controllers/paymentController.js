@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const stripe = new Stripe(process.env.SECRET_STRIPE_KEY);
+// const stripe = new Stripe(process.env.SECRET_STRIPE_KEY);
 
 export const addNewPayment = async (req, res, next) => {
     try {
@@ -19,7 +19,6 @@ export const addNewPayment = async (req, res, next) => {
             return res.status(400).send({ error: "Missing or unsupported currency" });
         }
 
-
         const order = await Order.findById(orderId);
         if (!order) {
             return res.status(404).send({ error: "Order not found" });
@@ -32,25 +31,30 @@ export const addNewPayment = async (req, res, next) => {
 
         const amount = Math.round(totalPrice * 100);
 
-        console.log("Creating payment with amount:", amount);
+        console.log("Sending to Stripe:", { amount, currency, metadata: { userId, orderId } });
 
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount,
-            currency,
-            metadata: { userId, orderId },
-        });
+        // const paymentIntent = await stripe.paymentIntents.create({
+        //     amount,
+        //     currency,
+        //     metadata: { userId, orderId },
+        // });
 
-        console.log("Payment intent created successfully:", paymentIntent.id);
 
+
+        // if (!paymentIntent || !paymentIntent.id) {
+        //     throw new Error("Failed to create payment intent in Stripe");
+        // }
 
         const payment = new Payment({
             user_id: userId,
             order_id: orderId,
             amount: totalPrice,
-            currency,
-            stripe_payment_id: paymentIntent.id,
-            status: paymentIntent.status,
+            currency: currency,
+            // stripe_payment_id: paymentIntent.id,
+
         });
+
+        console.log("Saving payment:", payment);
 
         await payment.save();
 
@@ -85,17 +89,18 @@ import mongoose from "mongoose";
 
 export const getPaymentById = async (req, res, next) => {
     try {
-        const { paymentId } = req.params;
+        const  paymentId  = req.params;
+        console.log(paymentId);
 
 
         if (!mongoose.Types.ObjectId.isValid(paymentId)) {
-            return res.status(400).send({ error: "Invalid Payment ID format" });
+            return res.status(400).send({ error: "Invalid Payment ID format", id: paymentId });
         }
 
         console.log("Payment ID from params:", paymentId);
 
 
-        const payment = await Payment.findById(paymentId);
+        const payment = await Payment.findOne({_id: paymentId});
         console.log("Payment found:", payment);
 
         if (!payment) {

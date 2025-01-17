@@ -10,4 +10,4 @@ export const paymentsRouter = express.Router();
 
 paymentsRouter.get('/', getAllPayments);
 
- paymentsRouter.get('/:id', validateIdParam, handleValidationErrors, getPaymentById);
+ paymentsRouter.get('/:id', getPaymentById);

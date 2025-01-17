@@ -12,6 +12,7 @@ import {addSkuToRequest} from "../middlewares/addSkuToRequest.js";
 import {handleValidationErrors} from "../middlewares/handleValidationErrors.js";
 import {validateProduct} from "../validators/validateProduct.js";
 import {validateIdParam} from "../validators/validateIdParam.js";
+import {isValidObjectId} from "../utils/utils.js";
 export const productsRouter = express.Router();
 
 
@@ -19,15 +20,15 @@ productsRouter.get('/', getAllProducts )
 
 // productsRouter.get('/search', getFilteredProducts)
 
-productsRouter.get('/:id', validateIdParam, getProductById)
+productsRouter.get('/:id', getProductById)
 
-productsRouter.post('/', addSkuToRequest, validateProduct, handleValidationErrors, addNewProduct)
+productsRouter.post('/', addSkuToRequest, addNewProduct)
 
-productsRouter.patch('/:id/stock', validateIdParam, updateProductStock )
+productsRouter.patch('/:id/stock', updateProductStock )
 
-productsRouter.delete('/:id', validateIdParam, deleteProduct)
+productsRouter.delete('/:id', deleteProduct)
 
-productsRouter.get('/:id', validateIdParam, getProductById);
+productsRouter.get('/:id', getProductById);
 
 
 

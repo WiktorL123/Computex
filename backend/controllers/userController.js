@@ -119,31 +119,93 @@ export const updateUserProfile = async (req, res, next) => {
 export const updateUserAddress = async (req, res) => {
     try {
         const { id, addressId } = req.params;
-        const { street, city, country, zipCode } = req.body;
+        const { street, city, country, zip_code } = req.body;
 
-        const user = await User.findById(id);
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid or missing user ID' });
+        }
 
+        if (!addressId || !mongoose.Types.ObjectId.isValid(addressId)) {
+            return res.status(400).json({ error: 'Invalid or missing address ID' });
+        }
+
+        const updateFields = {};
+        if (street) updateFields['addresses.$.street'] = street;
+        if (city) updateFields['addresses.$.city'] = city;
+        if (country) updateFields['addresses.$.country'] = country;
+        if (zip_code) updateFields['addresses.$.zip_code'] = zip_code;
+
+        const result = await User.updateOne(
+            { _id: id, 'addresses._id': addressId },
+            { $set: updateFields }
+        );
+
+        if (result.nModified === 0) {
+            return res.status(404).json({ error: 'Address not found or not updated' });
+        }
+
+        res.status(200).json({ message: 'Address updated successfully' });
+    } catch (error) {
+        console.error('Error updating address:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const deleteUserAddress = async (req, res, next) => {
+    try {
+        const {id, addressId} = req.params;
+        if (!id || !isValidObjectId(id)) {
+            return res.status(400).json({message: 'id no provided or invalid'})
+        }
+
+        const user = await User.findById(id)
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({message: 'No user found'})
         }
 
         const address = user.addresses.id(addressId);
-
         if (!address) {
-            return res.status(404).json({ error: 'Address not found' });
+            return res.status(404).json({message: 'No user address found'})
+        }
+        user.addresses.pull(addressId)
+        await user.save()
+        res.status(200).json({ message: 'User deleted successfully', address });
+
+    }
+    catch (error) {
+        next(createError(500, error.stack))
+    }
+}
+
+export const addUserAddress = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        if (!id || !isValidObjectId(id)) {
+            return res.status(400).json({ message: "id no provided or invalid" });
         }
 
-        if (street) address.street = street;
-        if (city) address.city = city;
-        if (country) address.country = country;
-        if (zipCode) address.zipCode = zipCode;
+        const { street, city, country, zip_code } = req.body;
 
-        await user.save();
+        if (!street || !city || !country || !zip_code) {
+            return res.status(400).json({ message: "missing fields" });
+        }
 
-        res.status(200).json({ message: 'Address updated successfully', address });
+        const address = { street, city, country, zip_code };
+
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { $push: { addresses: address } },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        return res.status(201).send({ message: "User address added", address });
     } catch (error) {
-        console.error("Error updating address", error);
-        res.status(500).json({ error: 'Internal server error' });
+        next(createError(500, error.stack));
     }
 };
 

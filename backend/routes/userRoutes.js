@@ -1,5 +1,5 @@
 import express from "express";
-import {register, getUserProfile, getUserAddresses, updateUserProfile, updateUserAddress} from "../controllers/userController.js";
+import {register, getUserProfile, getUserAddresses, updateUserProfile, updateUserAddress, addUserAddress, deleteUserAddress} from "../controllers/userController.js";
 import {verifyTokenMiddleware} from "../middlewares/verifyTokenMiddleware.js";
 export const usersRouter = express.Router();
 
@@ -11,6 +11,6 @@ usersRouter.put('/:id/profile', verifyTokenMiddleware, updateUserProfile )
 
 
 usersRouter.get('/:id/addresses', verifyTokenMiddleware, getUserAddresses )
-// usersRouter.post('/:id/addresses', verifyTokenMiddleware, addUserAddresses )
+usersRouter.post('/:id/addresses', verifyTokenMiddleware, addUserAddress )
 usersRouter.put('/:id/addresses/:addressId', verifyTokenMiddleware, updateUserAddress )
-// usersRouter.delete('/:id/addresses', verifyTokenMiddleware, deleteUserAddress)
+usersRouter.delete('/:id/addresses', verifyTokenMiddleware, deleteUserAddress)

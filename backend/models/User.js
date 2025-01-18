@@ -6,11 +6,11 @@ export const addressSchema = new mongoose.Schema({
 
     street:
         {   type: String,
-            default: ""
+            required: true,
         },
-    city: { type: String, default: "" },
-    country: { type: String, default: "" },
-    zip_code: { type: String, default: "" },
+    city: { type: String, required: true },
+    country: { type: String, required: true },
+    zip_code: { type: Number, required: true, minLength: 5, maxLength: 5 },
 }, {_id: true});
 
 const userSchema = new mongoose.Schema({

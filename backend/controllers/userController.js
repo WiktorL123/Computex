@@ -115,3 +115,40 @@ export const updateUserProfile = async (req, res, next) => {
 
 
 }
+
+export const updateUserAddress = async (req, res, next) => {
+    try {
+        const { id, addressIndex } = req.params;
+        const { street, city, country, zip_code } = req.body;
+
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "User ID not provided or invalid" });
+        }
+
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!user.addresses || user.addresses.length <= addressIndex || addressIndex < 0) {
+            return res.status(404).json({ message: "Address not found" });
+        }
+
+        const address = user.addresses[addressIndex];
+
+        if (street) address.street = street;
+        if (city) address.city = city;
+        if (country) address.country = country;
+        if (zip_code) address.zip_code = zip_code;
+
+        await user.save();
+
+        res.status(200).json({
+            message: "User's address updated successfully",
+            addresses: user.addresses,
+        });
+    } catch (error) {
+        next(createError(500, error.message || "Failed to update address"));
+    }
+};
+

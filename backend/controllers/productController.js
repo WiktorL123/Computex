@@ -62,7 +62,7 @@ export const updateProductStock = async (req, res, next) => {
         product.stock = stock;
         await product.save();
 
-        res.status(200).json({ message: "Product stock updated successfully", product });
+        res.status(201).json({ message: "Product stock updated successfully", product });
     } catch (error) {
         next(createError(500, "Failed to update product stock", error.message));
     }
@@ -85,36 +85,21 @@ export const deleteProduct = async (req, res, next) => {
     }
 };
 
-// export const getFilteredProducts = async (req, res, next) => {
-//     const { category_id, subcategory_id } = req.query;
-//
-//     if (!category_id) {
-//         return res.status(400).json({
-//             message: "category_id is required",
-//         });
-//     }
-//
-//     try {
-//         const filter = { category_id: Number(category_id) };
-//         if (subcategory_id) {
-//             filter["subcategory_id"] = Number(subcategory_id);
-//         }
-//
-//         const products = await Product.find(filter);
-//         const category = await Category.findOne({ category_id: Number(category_id) });
-//
-//         if (!category) {
-//             return res.status(404).json({
-//                 message: `Category with ID ${category_id} not found`,
-//             });
-//         }
-//
-//         res.status(200).json({
-//             message: "Filtered products and category fetched successfully",
-//             products,
-//             category,
-//         });
-//     } catch (error) {
-//         next(createError(500, "Failed to fetch filtered products and category", error.message));
-//     }
-// };
+export const updateProduct = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!id){
+            return res.status(400).json({ message: `Missing or invalid id` });
+        }
+
+        const product = await Product.findByIdAndUpdate(id)
+        if (!product) {
+            return res.status(404).json({ message: `Product with id ${id} not found` });
+        }
+        res.status(201).json({ message: "Product updated successfully", product });
+    }
+    catch (error) {
+        next(createError(500, "Failed to update product", error.message));
+    }
+
+}

@@ -5,7 +5,6 @@ import {getAllCategories,
         updateCategory,
         deleteCategory} from "../controllers/categoryController.js"
 import {handleValidationErrors} from "../middlewares/handleValidationErrors.js";
-import {validateCategory} from "../validators/validateCategory.js";
 import {validateIdParam} from "../validators/validateIdParam.js";
 
 

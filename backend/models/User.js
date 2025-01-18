@@ -2,7 +2,10 @@ import mongoose from "mongoose";
 import {hashPassword} from "../middlewares/hashPassword.js";
 
 export const addressSchema = new mongoose.Schema({
-    street: { type: String, default: "" },
+    street:
+        {   type: String,
+            default: ""
+        },
     city: { type: String, default: "" },
     country: { type: String, default: "" },
     zip_code: { type: String, default: "" },
@@ -52,8 +55,8 @@ const userSchema = new mongoose.Schema({
         default: 0
     },
     addresses: {
-        type: addressSchema,
-        default: {}
+        type: [addressSchema],
+        default: [],
     },
     role: {
         type: String,

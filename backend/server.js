@@ -12,6 +12,10 @@ import { categoriesRouter } from "./routes/categoriesRoutes.js";
 import { orderRouter } from "./routes/ordersRoutes.js";
 import {usersRouter} from "./routes/userRoutes.js";
 import {paymentsRouter} from "./routes/paymentsRoutes.js";
+import {authRouter} from "./routes/authRoutes.js";
+import cors from "cors";
+
+
 
 dotenv.config();
 coonectDB();
@@ -22,6 +26,13 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use("/public", express.static(path.join(__dirname, "public")));
+app.use(cors(
+    {
+        origin: "*",
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"]
+    }
+))
 
 
 const port = process.env.PORT || 3000;
@@ -47,6 +58,7 @@ app.use('/api/categories', categoriesRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/payments', paymentsRouter)
+app.use('/auth', authRouter);
 
 
 app.get('/error', (req, res) => {

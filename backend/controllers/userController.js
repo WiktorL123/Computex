@@ -116,39 +116,34 @@ export const updateUserProfile = async (req, res, next) => {
 
 }
 
-export const updateUserAddress = async (req, res, next) => {
+export const updateUserAddress = async (req, res) => {
     try {
-        const { id, addressIndex } = req.params;
-        const { street, city, country, zip_code } = req.body;
-
-        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "User ID not provided or invalid" });
-        }
+        const { id, addressId } = req.params;
+        const { street, city, country, zipCode } = req.body;
 
         const user = await User.findById(id);
+
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ error: 'User not found' });
         }
 
-        if (!user.addresses || user.addresses.length <= addressIndex || addressIndex < 0) {
-            return res.status(404).json({ message: "Address not found" });
-        }
+        const address = user.addresses.id(addressId);
 
-        const address = user.addresses[addressIndex];
+        if (!address) {
+            return res.status(404).json({ error: 'Address not found' });
+        }
 
         if (street) address.street = street;
         if (city) address.city = city;
         if (country) address.country = country;
-        if (zip_code) address.zip_code = zip_code;
+        if (zipCode) address.zipCode = zipCode;
 
         await user.save();
 
-        res.status(200).json({
-            message: "User's address updated successfully",
-            addresses: user.addresses,
-        });
+        res.status(200).json({ message: 'Address updated successfully', address });
     } catch (error) {
-        next(createError(500, error.message || "Failed to update address"));
+        console.error("Error updating address", error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 

@@ -12,5 +12,5 @@ usersRouter.put('/:id/profile', verifyTokenMiddleware, updateUserProfile )
 
 usersRouter.get('/:id/addresses', verifyTokenMiddleware, getUserAddresses )
 // usersRouter.post('/:id/addresses', verifyTokenMiddleware, addUserAddresses )
-usersRouter.put('/:id/addresses/addressIndex', verifyTokenMiddleware, updateUserAddress )
+usersRouter.put('/:id/addresses/:addressId', verifyTokenMiddleware, updateUserAddress )
 // usersRouter.delete('/:id/addresses', verifyTokenMiddleware, deleteUserAddress)

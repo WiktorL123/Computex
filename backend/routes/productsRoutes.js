@@ -5,7 +5,7 @@ import
     getProductById,
     addNewProduct,
     updateProductStock,
-    deleteProduct, updateProduct,
+    deleteProduct, updateProduct, getFilteredProducts,
     // getFilteredProducts
 } from "../controllers/productController.js";
 
@@ -16,9 +16,10 @@ import {isValidObjectId} from "../utils/utils.js";
 export const productsRouter = express.Router();
 
 
+productsRouter.get("/search", getFilteredProducts)
 productsRouter.get('/', getAllProducts )
 
-// productsRouter.get('/search', getFilteredProducts)
+
 
 productsRouter.get('/:id', getProductById)
 
@@ -28,7 +29,6 @@ productsRouter.patch('/:id/stock', updateProductStock )
 
 productsRouter.delete('/:id', deleteProduct)
 
-productsRouter.get('/:id', getProductById);
 
 productsRouter.put('/:id', updateProduct )
 

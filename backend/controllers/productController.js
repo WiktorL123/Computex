@@ -1,6 +1,7 @@
 import { Product } from "../models/Product.js";
 import { Category } from "../models/Category.js";
 import { createError } from "../utils/utils.js";
+import mongoose from "mongoose";
 
 export const getAllProducts = async (req, res, next) => {
     try {
@@ -10,8 +11,7 @@ export const getAllProducts = async (req, res, next) => {
         }
         res.status(200).json(products);
     } catch (error) {
-        next(createError(500, "Failed to fetch products", error.message));
-    }
+        next(error)    }
 };
 
 export const getProductById = async (req, res, next) => {
@@ -23,9 +23,44 @@ export const getProductById = async (req, res, next) => {
         }
         res.status(200).json(product);
     } catch (error) {
-        next(createError(500, "Failed to get product", error.message));
+        next(error);
     }
 };
+
+export const getFilteredProducts = async (req, res, next) => {
+    try {
+        const {category_id, minPrice, maxPrice, sortBy, order} = req.query;
+        const filter = {}
+
+        if (category_id) {
+            if (!mongoose.Types.ObjectId.isValid(category_id)) {
+                return res.status(400).json({ message: "Invalid category_id" });
+            }
+            filter.category_id = new mongoose.Types.ObjectId(category_id); // Rzutowanie na ObjectId
+        }
+
+        if (minPrice) {
+            filter.price = { ...filter.price, $gte: parseFloat(minPrice) };
+        }
+
+        if (maxPrice) {
+            filter.price = { ...filter.price, $lte: parseFloat(maxPrice) };
+        }
+        const sort = { }
+
+        if (sortBy) {
+            sort[sortBy] = order === "desc" ? -1 : 1;
+        }
+        const products = await Product.find(filter).sort(sort)
+
+        if (!products.length)
+            return res.status(404).json({ message: "No products found" });
+        res.status(200).json({message: "products found", products});
+    }
+    catch (error) {
+        next(createError(500, "Failed to get filtered products", error.message));
+    }
+}
 
 export const addNewProduct = async (req, res, next) => {
     try {
@@ -41,8 +76,7 @@ export const addNewProduct = async (req, res, next) => {
 
         res.status(201).json({ message: "Product created successfully", product: newProduct });
     } catch (error) {
-        next(createError(500, "Failed to add product", error.message));
-    }
+        next(error)    }
 };
 
 export const updateProductStock = async (req, res, next) => {
@@ -64,7 +98,7 @@ export const updateProductStock = async (req, res, next) => {
 
         res.status(201).json({ message: "Product stock updated successfully", product });
     } catch (error) {
-        next(createError(500, "Failed to update product stock", error.message));
+        next(error)
     }
 };
 
@@ -81,7 +115,7 @@ export const deleteProduct = async (req, res, next) => {
 
         res.status(200).json({ message: "Product deleted successfully", product });
     } catch (error) {
-        next(createError(500, "Failed to delete product", error.message));
+        next(error)
     }
 };
 
@@ -99,7 +133,7 @@ export const updateProduct = async (req, res, next) => {
         res.status(201).json({ message: "Product updated successfully", product });
     }
     catch (error) {
-        next(createError(500, "Failed to update product", error.message));
+        next(error)
     }
 
 }

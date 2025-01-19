@@ -7,10 +7,10 @@ import {
     deleteOrder,
     getOrdersByUserId
 } from "../controllers/orderController.js"
-import {validateId} from "../middlewares/validateIdMiddleware.js";
 
-import {validateOrder} from "../validators/validateOrder.js";
-import {handleValidationErrors} from "../middlewares/handleValidationErrors.js";
+
+
+
 import {validateIdParam} from "../validators/validateIdParam.js";
 import calculateTotalPrice from "../middlewares/calculateTotalPrize.js";
 
@@ -20,8 +20,8 @@ orderRouter.get('/', getOrders);
 
 orderRouter.get('/:id', getOrderById);
 
-orderRouter.post('/', validateOrder, handleValidationErrors, calculateTotalPrice, createOrder)
+orderRouter.post('/', calculateTotalPrice, createOrder)
 
-orderRouter.put('/:id', validateOrder, handleValidationErrors, validateIdParam, updateOrder )
+orderRouter.put('/:id', validateIdParam, updateOrder )
 
 orderRouter.delete('/:id', validateIdParam, deleteOrder);

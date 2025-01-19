@@ -26,11 +26,6 @@ const paymentSchema = new mongoose.Schema({
         enum: ["eur", "usd", "pln", "gbp"],
         default: "usd"
     },
-    // stripe_payment_id: {
-    //     type: String,
-    //     unique: true,
-    //     required: true
-    // },
     status: {
         type: String,
         enum: ["succeeded", "failed", "requires_action", "requires_payment_method"],

@@ -9,7 +9,7 @@ export const getAllReviews = async (req, res, next) => {
         }
         res.status(200).json(reviews);
     } catch (error) {
-        next(createError(500, "Failed to fetch reviews", error.message));
+            next(error)
     }
 };
 
@@ -22,7 +22,7 @@ export const getReviewById = async (req, res, next) => {
         }
         res.status(200).json(review);
     } catch (error) {
-        next(createError(500, "Failed to fetch review", error.message));
+        next(error)
     }
 };
 
@@ -40,28 +40,25 @@ export const addReview = async (req, res, next) => {
             review: newReview,
         });
     } catch (error) {
-        next(createError(500, "Failed to add review", error.message));
+        next(error)
     }
 };
 
 export const editReview = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const reviewData = req.body;
-        const review = await Review.findById(id);
+        const {updateData} = req.body
+        const review = await Review.findByIdAndUpdate(id, updateData);
 
         if (!review) {
             return res.status(404).json({ message: `Review with id ${id} not found` });
         }
-
-        Object.assign(review, reviewData);
-        await review.save();
         res.status(200).json({
             message: "Review updated successfully",
             review,
         });
     } catch (error) {
-        next(createError(500, "Failed to update review", error.message));
+        next(error)
     }
 };
 
@@ -80,6 +77,6 @@ export const deleteReview = async (req, res, next) => {
             review,
         });
     } catch (error) {
-        next(createError(500, "Failed to delete review", error.message));
+        next(error)
     }
 };

@@ -62,6 +62,41 @@ export const getUserProfile = async (req, res, next) => {
 
 
 }
+
+
+export const getAllUsers = async (req, res, next) => {
+    try {
+        const allUsers = await User.find()
+        if (!allUsers) {
+            return res.status(404).json({message: 'No users found'})
+        }
+        return res.status(200).send(allUsers)
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+
+export const deleteUserProfile = async (req, res, next) => {
+    try {
+        const userId = req.params.id;
+        if (!userId || !isValidObjectId(userId)) {
+            return res.status(400).json({message: 'id no provided or invalid'})
+        }
+        const deletedUser = await User.findByIdAndDelete(userId)
+
+        if (!deletedUser) {
+            return res.status(404).json({message: 'No user found with that id'})
+        }
+        return res.status(200).send({message: 'User deleted successfully'})
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+
 export const getUserAddresses = async (req, res, next) => {
     try {
         const userId = req.params.id;
@@ -140,7 +175,7 @@ export const updateUserAddress = async (req, res) => {
             { $set: updateFields }
         );
 
-        if (result.nModified === 0) {
+        if (result.length === 0) {
             return res.status(404).json({ error: 'Address not found or not updated' });
         }
 
@@ -169,11 +204,11 @@ export const deleteUserAddress = async (req, res, next) => {
         }
         user.addresses.pull(addressId)
         await user.save()
-        res.status(200).json({ message: 'User deleted successfully', address });
+        res.status(200).json({ message: "User's deleted successfully", address });
 
     }
     catch (error) {
-        next(createError(500, error.stack))
+        next(error)
     }
 }
 
@@ -205,7 +240,7 @@ export const addUserAddress = async (req, res, next) => {
 
         return res.status(201).send({ message: "User address added", address });
     } catch (error) {
-        next(createError(500, error.stack));
+        next(error)
     }
 };
 

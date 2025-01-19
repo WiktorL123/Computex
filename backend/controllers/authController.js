@@ -29,7 +29,7 @@ export const login = async (req, res, next) => {
     }
 
     catch (error) {
-        next(createError(500, "Failed to login"));
+        next(error)
     }
 }
 
@@ -38,6 +38,6 @@ export const logout = async (req, res, next) => {
         res.status(200).json({message: 'Logged out successfully'});
     }
     catch (error) {
-        next(createError(500, "Failed to logout"));
+        next(error)
     }
 }

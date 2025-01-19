@@ -14,6 +14,7 @@ import {usersRouter} from "./routes/userRoutes.js";
 import {paymentsRouter} from "./routes/paymentsRoutes.js";
 import {authRouter} from "./routes/authRoutes.js";
 import cors from "cors";
+import {adminRouter} from "./routes/adminRoutes.js";
 
 
 
@@ -51,7 +52,7 @@ app.post('/api/test', (req, res) => {
     });
 });
 
-
+app.use('/admin', adminRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/reviews', reviewRouter);
 app.use('/api/categories', categoriesRouter);

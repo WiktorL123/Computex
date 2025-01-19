@@ -1,5 +1,0 @@
-
-TODO: model notifications i discounts cart (urposzoczona logika)
-TODO: logowanie rejestracja autentykacja tokenem jwt - zabezpieczenie tras
-TODO: ADMIN i jego trasy - przesienie niektorych operacji na admina - opcjonalnie
-TODO: user adresses profile itak dalej itak dalej i tak dalej

@@ -9,7 +9,7 @@ dotenv.config();
 
 export const addNewPayment = async (req, res, next) => {
     try {
-        const { userId, orderId, currency } = req.body;
+        const { user_id: userId, order_id: orderId, currency } = req.body;
 
         if (!userId || !orderId) {
             return res.status(400).send({ error: "Missing userId or orderId" });
@@ -31,20 +31,15 @@ export const addNewPayment = async (req, res, next) => {
 
         const amount = Math.round(totalPrice * 100);
 
-        console.log("Sending to Stripe:", { amount, currency, metadata: { userId, orderId } });
-
+      //  console.log("Sending to Stripe:", { amount, currency, metadata: { userId, orderId } });
         // const paymentIntent = await stripe.paymentIntents.create({
         //     amount,
         //     currency,
         //     metadata: { userId, orderId },
         // });
-
-
-
         // if (!paymentIntent || !paymentIntent.id) {
         //     throw new Error("Failed to create payment intent in Stripe");
         // }
-
         const payment = new Payment({
             user_id: userId,
             order_id: orderId,
@@ -89,7 +84,7 @@ import mongoose from "mongoose";
 
 export const getPaymentById = async (req, res, next) => {
     try {
-        const  paymentId  = req.params;
+        const  paymentId  = req.params.id;
         console.log(paymentId);
 
 
@@ -112,3 +107,42 @@ export const getPaymentById = async (req, res, next) => {
         next(error);
     }
 };
+
+export const updatePayment = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send({ error: "Invalid Payment ID format", id: paymentId });
+        }
+        const updateData = req.body;
+
+
+        const updatedPayment = await Payment.findByIdAndUpdate(id, updateData)
+        if (!updatedPayment) {
+            return res.status(404).send({ error: "Payment not found" });
+        }
+        return     res.status(200).json({message: "Payment updated successfully", payment: updatedPayment});
+    }
+    catch (error) {
+        next(error);
+    }
+
+}
+
+
+export const deletePayment = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+       if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+           return res.status(400).send({ error: "Invalid Payment ID format", id: id });
+       }
+       const deletedPayment = Payment.findByIdAndDelete(id)
+        if (!deletedPayment) {
+            return res.status(404).send({ error: "Payment not found" });
+        }
+       return  res.status(200).json({message: "Payment deleted successfully", payment: deletedPayment})
+    }
+    catch (error) {
+        next(error);
+    }
+}

@@ -14,7 +14,15 @@ export const verifyTokenMiddleware = (req, res, next) => {
             return res.status(403).json({ error: "Access denied" });
         }
 
-        req.user = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        console.log("Decoded token payload:", decoded);
+
+        req.user = decoded;
+
+        console.log("User role:", req.user.role);
+
+        console.log('user role: ', req.user.role);
         next()
 
     }

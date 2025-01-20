@@ -4,18 +4,23 @@ import {getAllCategories,
         addNewCategory,
         updateCategory,
         deleteCategory} from "../controllers/categoryController.js"
-import {handleValidationErrors} from "../middlewares/handleValidationErrors.js";
-import {validateIdParam} from "../validators/validateIdParam.js";
+import {verifyTokenMiddleware} from "../middlewares/verifyTokenMiddleware.js";
+import {addRoleToRequest} from "../middlewares/addRoleToRequest.js";
+import {checkRole} from "../middlewares/checkRole.js";
+
 
 
 export const categoriesRouter =  express.Router();
 
+
+categoriesRouter.use(verifyTokenMiddleware)
+
 categoriesRouter.get('/', getAllCategories);
 
-categoriesRouter.get('/:id',  validateIdParam, handleValidationErrors, getCategoryById );
+categoriesRouter.get('/:id', getCategoryById );
 
-categoriesRouter.post('/', addNewCategory);
+categoriesRouter.post('/', addRoleToRequest, checkRole, addNewCategory);
 
-categoriesRouter.put('/:id', validateIdParam, handleValidationErrors, updateCategory);
+categoriesRouter.put('/:id',addRoleToRequest, checkRole, updateCategory);
 
-categoriesRouter.delete('/:id', validateIdParam, handleValidationErrors, deleteCategory);
+categoriesRouter.delete('/:id',addRoleToRequest, checkRole,  deleteCategory);

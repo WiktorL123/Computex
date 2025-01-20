@@ -1,6 +1,5 @@
 import { Order } from "../models/Order.js";
 import { Product } from "../models/Product.js";
-import { createError } from "../utils/utils.js";
 
 export const getOrders = async (req, res, next) => {
     try {

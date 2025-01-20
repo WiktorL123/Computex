@@ -6,31 +6,26 @@ import
     addNewProduct,
     updateProductStock,
     deleteProduct, updateProduct, getFilteredProducts,
-    // getFilteredProducts
 } from "../controllers/productController.js";
 
 import {addSkuToRequest} from "../middlewares/addSkuToRequest.js";
-import {handleValidationErrors} from "../middlewares/handleValidationErrors.js";
-import {validateIdParam} from "../validators/validateIdParam.js";
-import {isValidObjectId} from "../utils/utils.js";
+import {verifyTokenMiddleware} from "../middlewares/verifyTokenMiddleware.js";
+import {addRoleToRequest} from "../middlewares/addRoleToRequest.js";
+import {checkRole} from "../middlewares/checkRole.js";
+import {adminRouter} from "./adminRoutes.js";
+
 export const productsRouter = express.Router();
 
 
 productsRouter.get("/search", getFilteredProducts)
 productsRouter.get('/', getAllProducts )
-
-
-
 productsRouter.get('/:id', getProductById)
 
-productsRouter.post('/', addSkuToRequest, addNewProduct)
 
-productsRouter.patch('/:id/stock', updateProductStock )
-
-productsRouter.delete('/:id', deleteProduct)
-
-
-productsRouter.put('/:id', updateProduct )
+productsRouter.post('/',verifyTokenMiddleware, addRoleToRequest, checkRole, addSkuToRequest, addNewProduct)
+productsRouter.patch('/:id/stock',verifyTokenMiddleware, addRoleToRequest, checkRole, updateProductStock )
+productsRouter.delete('/:id',verifyTokenMiddleware, addRoleToRequest, checkRole, deleteProduct)
+productsRouter.put('/:id',verifyTokenMiddleware, addRoleToRequest, checkRole, updateProduct )
 
 
 

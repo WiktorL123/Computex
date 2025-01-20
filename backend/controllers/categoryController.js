@@ -1,5 +1,4 @@
 import { Category } from "../models/Category.js";
-import { createError } from "../utils/utils.js";
 
 export const getAllCategories = async (req, res, next) => {
     try {

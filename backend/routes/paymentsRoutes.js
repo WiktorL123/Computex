@@ -1,5 +1,4 @@
 import express from "express";
-import {calculatePaymentAmount} from "../middlewares/calculatePaymentAmount.js";
 import {
  addNewPayment,
  deletePayment,
@@ -7,12 +6,16 @@ import {
  getPaymentById,
  updatePayment
 } from "../controllers/paymentController.js";
-import {validateIdParam} from "../validators/validateIdParam.js";
-import {handleValidationErrors} from "../middlewares/handleValidationErrors.js";
+
+import {verifyTokenMiddleware} from "../middlewares/verifyTokenMiddleware.js";
+import {addRoleToRequest} from "../middlewares/addRoleToRequest.js";
+import {checkRole} from "../middlewares/checkRole.js";
 export const paymentsRouter = express.Router();
 
-
+ paymentsRouter.use(verifyTokenMiddleware)
  paymentsRouter.post( '/', addNewPayment)
+
+paymentsRouter.use(addRoleToRequest, checkRole)
 
 paymentsRouter.get('/', getAllPayments);
 

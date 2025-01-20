@@ -133,10 +133,10 @@ export const updatePayment = async (req, res, next) => {
 export const deletePayment = async (req, res, next) => {
     try {
         const id = req.params.id;
-       if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
            return res.status(400).send({ error: "Invalid Payment ID format", id: id });
        }
-       const deletedPayment = Payment.findByIdAndDelete(id)
+       const deletedPayment = await Payment.findByIdAndDelete(id)
         if (!deletedPayment) {
             return res.status(404).send({ error: "Payment not found" });
         }

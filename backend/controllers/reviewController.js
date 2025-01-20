@@ -1,5 +1,4 @@
 import Review from "../models/Review.js";
-import { createError } from "../utils/utils.js";
 
 export const getAllReviews = async (req, res, next) => {
     try {
@@ -65,13 +64,12 @@ export const editReview = async (req, res, next) => {
 export const deleteReview = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const review = await Review.findById(id);
+        const review = await Review.findByIdAndDelete(id);
 
         if (!review) {
             return res.status(404).json({ message: `Review with id ${id} not found` });
         }
 
-        await review.deleteOne();
         res.status(200).json({
             message: "Review deleted successfully",
             review,

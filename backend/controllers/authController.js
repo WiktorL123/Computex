@@ -2,7 +2,6 @@ import {User} from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import {createError} from "../utils/utils.js";
 dotenv.config();
 export const login = async (req, res, next) => {
     try {

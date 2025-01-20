@@ -1,6 +1,5 @@
 import { Product } from "../models/Product.js";
 import { Category } from "../models/Category.js";
-import { createError } from "../utils/utils.js";
 import mongoose from "mongoose";
 
 export const getAllProducts = async (req, res, next) => {
@@ -58,7 +57,7 @@ export const getFilteredProducts = async (req, res, next) => {
         res.status(200).json({message: "products found", products});
     }
     catch (error) {
-        next(createError(500, "Failed to get filtered products", error.message));
+        next(error)
     }
 }
 

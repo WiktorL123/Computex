@@ -13,8 +13,11 @@ import { orderRouter } from "./routes/ordersRoutes.js";
 import {usersRouter} from "./routes/userRoutes.js";
 import {paymentsRouter} from "./routes/paymentsRoutes.js";
 import {authRouter} from "./routes/authRoutes.js";
+import {cartRouter} from "./routes/cartRoutes.js";
 import cors from "cors";
 import {adminRouter} from "./routes/adminRoutes.js";
+import {promotionRouter} from "./routes/promotionRoutes.js";
+import {notificationRouter} from "./routes/notificationsRoutes.js";
 
 
 
@@ -59,7 +62,10 @@ app.use('/api/categories', categoriesRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/payments', paymentsRouter)
+app.use('/api/cart', cartRouter);
 app.use('/auth', authRouter);
+app.use('/api/promotions', promotionRouter);
+app.use('/api/notifications', notificationRouter);
 
 
 app.get('/error', (req, res) => {

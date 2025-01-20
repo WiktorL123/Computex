@@ -1,7 +1,7 @@
 
 import {User} from "../models/User.js";
-import {createError} from "../utils/utils.js";
 import mongoose, {isValidObjectId} from "mongoose";
+import {Cart} from "../models/Cart.js";
 
 export const register = async (req, res, next) => {
 
@@ -10,7 +10,7 @@ export const register = async (req, res, next) => {
         if (!name || !second_name || !email  || !password) {
             return res.status(400).send({error: 'Please enter fill required fields'});
         }
-        const existingUser = await User.findOne({ email })
+        const existingUser = await User.findOne({ email: email })
         if (existingUser) {
             return res.status(400).send({error: `User with email ${email} already exists`});
         }
@@ -27,10 +27,12 @@ export const register = async (req, res, next) => {
         )
 
        await newUser.save()
+
+        const newCart = new Cart({userId: savedUser._id})
+        await newCart.save()
         return res.status(200).send({message: 'User saved successfully'})
     }
     catch (error) {
-        createError(500, error.stack)
         next(error);
     }
 }
@@ -56,8 +58,6 @@ export const getUserProfile = async (req, res, next) => {
         })
     }
     catch (error) {
-        createError(500, error.stack)
-        next(error);
     }
 
 
@@ -66,16 +66,22 @@ export const getUserProfile = async (req, res, next) => {
 
 export const getAllUsers = async (req, res, next) => {
     try {
-        const allUsers = await User.find()
-        if (!allUsers) {
-            return res.status(404).json({message: 'No users found'})
+        const allUsers = await User.find().select("-password");
+
+        if (!allUsers || allUsers.length === 0) {
+            return res.status(404).json({ message: "No users found" });
         }
-        return res.status(200).send(allUsers)
+
+        return res.status(200).json({
+            message: "Users retrieved successfully",
+            users: allUsers,
+        });
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        next(error);
     }
-    catch (error) {
-        next(error)
-    }
-}
+};
+
 
 
 export const deleteUserProfile = async (req, res, next) => {
@@ -89,7 +95,9 @@ export const deleteUserProfile = async (req, res, next) => {
         if (!deletedUser) {
             return res.status(404).json({message: 'No user found with that id'})
         }
+        await Cart.findOneAndDelete({userId: id})
         return res.status(200).send({message: 'User deleted successfully'})
+
     }
     catch (error) {
         next(error)
@@ -241,6 +249,41 @@ export const addUserAddress = async (req, res, next) => {
         return res.status(201).send({ message: "User address added", address });
     } catch (error) {
         next(error)
+    }
+};
+export const getUserById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid or missing user ID" });
+        }
+
+
+        const user = await User.findById(id).populate("addresses"); // Opcjonalnie możesz załadować powiązane dane, jeśli są
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+
+        return res.status(200).json({
+            message: "User details retrieved successfully",
+            user: {
+                id: user._id,
+                name: user.name,
+                second_name: user.second_name,
+                email: user.email,
+                addresses: user.addresses,
+                role: user.role,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+            },
+        });
+    } catch (error) {
+        console.error("Error fetching user details:", error);
+        next(error);
     }
 };
 

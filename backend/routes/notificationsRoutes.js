@@ -1,10 +1,15 @@
+import express from 'express';
 import {addRoleToRequest} from "../middlewares/addRoleToRequest.js";
 import {checkRole} from "../middlewares/checkRole.js";
-import {createNotification} from "../controllers/notificationController.js";
+import {
+    createNotification,
+    deleteNotification,
+    getAllNotifications,
+    getNotificationById, updateNotification
+} from "../controllers/notificationController.js";
 
-const express = require("express");
-const {verifyTokenMiddleware} = require("../middlewares/verifyTokenMiddleware.js");
-const {getAllNotifications, getNotificationById, updateNotification, deleteNotification} = require("../controllers/notificationController.js");
+import {verifyTokenMiddleware} from "../middlewares/verifyTokenMiddleware.js";
+
 export const notificationRouter = express.Router();
 
 notificationRouter.use(verifyTokenMiddleware);

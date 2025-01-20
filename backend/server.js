@@ -21,6 +21,8 @@ import {notificationRouter} from "./routes/notificationsRoutes.js";
 
 
 
+
+
 dotenv.config();
 coonectDB();
 
@@ -29,6 +31,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+app.set("view engine", "ejs")
+app.set("views", path.join(__dirname, "public/views"));
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(cors(
     {
@@ -55,6 +60,8 @@ app.post('/api/test', (req, res) => {
     });
 });
 
+
+
 app.use('/admin', adminRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/reviews', reviewRouter);
@@ -66,6 +73,10 @@ app.use('/api/cart', cartRouter);
 app.use('/auth', authRouter);
 app.use('/api/promotions', promotionRouter);
 app.use('/api/notifications', notificationRouter);
+
+app.use((req, res) => {
+    res.status(404).render("404");
+});
 
 
 app.get('/error', (req, res) => {

@@ -152,7 +152,6 @@ export const updateUserProfile = async (req, res, next) => {
         return res.status(200).send({message: 'User updated successfully'})
     }
     catch (error) {
-        createError(500, error.stack)
         next(error);
     }
 

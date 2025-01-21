@@ -9,7 +9,7 @@ export const getOrders = async (req, res, next) => {
         }
         res.status(200).json({ message: "Orders retrieved successfully", orders });
     } catch (error) {
-        next(createError(500, "Failed to fetch orders", error.message));
+        next(error);
     }
 };
 
@@ -22,7 +22,7 @@ export const getOrderById = async (req, res, next) => {
         }
         res.status(200).json({ message: "Order retrieved successfully", order });
     } catch (error) {
-        next(createError(500, "Failed to fetch order", error.message));
+        next(error);
     }
 };
 
@@ -32,12 +32,12 @@ export const getOrdersByUserId = async (req, res, next) => {
         const {userId} = req.params;
         const orders = await Order.find({user_id: userId})
         if (!orders.length) {
-            return res.status(404).json({ message: `Order with id ${userId} not found` });
+            return res.status(404).json({ message: `Orders not found` });
         }
         res.status(200).json({ message: "Order retrieved successfully", orders });
     }
     catch (error) {
-        next(createError(500, "Failed to fetch orders", error.message));
+        next(error);
     }
 }
 
@@ -84,7 +84,7 @@ export const createOrder = async (req, res, next) => {
             order: newOrder,
         });
     } catch (error) {
-        next(createError(500, "Failed to create order", error.message));
+        next(error);
     }
 };
 
@@ -106,7 +106,7 @@ export const updateOrder = async (req, res, next) => {
             order,
         });
     } catch (error) {
-        next(createError(500, "Failed to update order", error.message));
+        next(error);
     }
 };
 
@@ -126,6 +126,6 @@ export const deleteOrder = async (req, res, next) => {
             order,
         });
     } catch (error) {
-        next(createError(500, "Failed to delete order", error.message));
+        next(error);
     }
 }

@@ -13,11 +13,13 @@ import {checkRole} from "../middlewares/checkRole.js";
 export const categoriesRouter =  express.Router();
 
 
-categoriesRouter.use(verifyTokenMiddleware)
+
 
 categoriesRouter.get('/', getAllCategories);
 
 categoriesRouter.get('/:id', getCategoryById );
+
+categoriesRouter.use(verifyTokenMiddleware)
 
 categoriesRouter.post('/', addRoleToRequest, checkRole, addNewCategory);
 

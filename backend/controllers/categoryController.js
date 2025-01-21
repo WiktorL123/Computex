@@ -21,7 +21,7 @@ export const getCategoryById = async (req, res, next) => {
         }
         res.status(200).json({ message: "Category found", category });
     } catch (error) {
-        next(createError(500, "Failed to fetch category", error.message));
+        next(error);
     }
 };
 

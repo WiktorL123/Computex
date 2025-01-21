@@ -4,7 +4,7 @@ import {
     getOrderById,
     createOrder,
     updateOrder,
-    deleteOrder,
+    deleteOrder, getOrdersByUserId,
 } from "../controllers/orderController.js";
 
 import calculateTotalPrice from "../middlewares/calculateTotalPrize.js";
@@ -19,11 +19,12 @@ orderRouter.use(verifyTokenMiddleware);
 
 
 orderRouter.post('/', calculateTotalPrice, createOrder);
+orderRouter.get('/:userId', getOrdersByUserId)
 
 
 orderRouter.use(addRoleToRequest, checkRole);
 
-orderRouter.get('/', getOrders); // Pobierz wszystkie zamówienia
-orderRouter.get('/:id', getOrderById); // Pobierz zamówienie po ID
-orderRouter.put('/:id', updateOrder); // Zaktualizuj zamówienie
-orderRouter.delete('/:id', deleteOrder); // Usuń zamówienie
+orderRouter.get('/', getOrders);
+orderRouter.get('/:id', getOrderById);
+orderRouter.put('/:id', updateOrder);
+orderRouter.delete('/:id', deleteOrder);

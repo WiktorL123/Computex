@@ -7,11 +7,14 @@ import {deleteReview} from "../controllers/reviewController.js"
 import {verifyTokenMiddleware} from "../middlewares/verifyTokenMiddleware.js";
 export const reviewRouter = express.Router();
 
-reviewRouter.use(verifyTokenMiddleware);
+
 
 reviewRouter.get('/', getAllReviews )
 
 reviewRouter.get('/:id',  getReviewById)
+
+
+reviewRouter.use(verifyTokenMiddleware);
 
 reviewRouter.put('/:id/edit', editReview)
 

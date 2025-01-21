@@ -17,6 +17,7 @@ notificationRouter.use(verifyTokenMiddleware);
 
 notificationRouter.get("/", getAllNotifications);
 notificationRouter.get("/:id", getNotificationById);
-notificationRouter.put("/:id", updateNotification);
+
 notificationRouter.delete("/:id", deleteNotification);
 notificationRouter.post('/', addRoleToRequest, checkRole, createNotification);
+notificationRouter.put("/:id", addRoleToRequest, checkRole, updateNotification);

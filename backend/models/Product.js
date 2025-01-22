@@ -9,48 +9,47 @@ const ProductSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: true,
-        min: 1
+        min: 1,
     },
-    category_id:
-        {
+    category_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "Category"
-        },
+        ref: "Category",
+    },
     filters: {
         type: Map,
         of: String,
         validate: {
-            validator: (value) =>{
-                const maxFilters = 10
+            validator: (value) => {
+                const maxFilters = 10;
                 return Object.keys(value).length <= maxFilters;
             },
-            mongoose: 'Maximum number of filters for product is 10'
-
-        }
-    },
-    description:
-        {
-            type: String,
-            min: 1,
-            max: 16
+            message: "Maximum number of filters for product is 10",
         },
+    },
+    description: {
+        type: String,
+        minlength: 1,
+        maxlength: 16,
+    },
     stock: {
         type: Number,
-        min: 1,
-        default: 0
-    },
-    images:
-            {
-                type: [String],
-                default: []
-            },
-    sku:
-        {
-            type: String,
-            unique: true ,
-            match: [/^[a-zA-Z0-9]{8}$/, "SKU must be exactly 8 alphanumeric characters"],
+        default: 0,
+        validate: {
+            validator: Number.isInteger,
+            message: "Stock must be a positive integer",
         },
-}, { timestamps: true, collection: 'Products' });
+        min: [0, "Stock cannot be negative"],
+    },
+    images: {
+        type: [String],
+        default: [],
+    },
+    sku: {
+        type: String,
+        unique: true,
+        match: [/^[a-zA-Z0-9]{8}$/, "SKU must be exactly 8 alphanumeric characters"],
+    },
+}, { timestamps: true, collection: "Products" });
 
 export const Product = mongoose.model("Product", ProductSchema);

@@ -1,13 +1,15 @@
 import express from "express";
 import {
-    getOrders,
+    getAllOrders,
     getOrderById,
-    createOrder,
+    addOrder,
     updateOrder,
-    deleteOrder, getOrdersByUserId,
+    confirmOrder,
+    cancelOrder,
+    getAllOrdersByUserId
 } from "../controllers/orderController.js";
 
-import calculateTotalPrice from "../middlewares/calculateTotalPrize.js";
+
 import { verifyTokenMiddleware } from "../middlewares/verifyTokenMiddleware.js";
 import { addRoleToRequest } from "../middlewares/addRoleToRequest.js";
 import { checkRole } from "../middlewares/checkRole.js";
@@ -17,14 +19,10 @@ export const orderRouter = express.Router();
 
 orderRouter.use(verifyTokenMiddleware);
 
-
-orderRouter.post('/', calculateTotalPrice, createOrder);
-orderRouter.get('/:userId', getOrdersByUserId)
-
-
-orderRouter.use(addRoleToRequest, checkRole);
-
-orderRouter.get('/', getOrders);
-orderRouter.get('/:id', getOrderById);
-orderRouter.put('/:id', updateOrder);
-orderRouter.delete('/:id', deleteOrder);
+orderRouter.get('/', addRoleToRequest, checkRole, getAllOrders)
+orderRouter.get('/user', getAllOrdersByUserId)
+orderRouter.get('/:id', getOrderById)
+orderRouter.post('/', addOrder)
+orderRouter.put('/:id',addRoleToRequest, checkRole, updateOrder)
+orderRouter.put('/:id/confirm', confirmOrder)
+orderRouter.patch('/:id/cancel', cancelOrder)

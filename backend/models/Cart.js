@@ -18,10 +18,13 @@ const cartSchema = new mongoose.Schema({
                 type: Number,
                 required: [true, "Quantity is required"],
                 min: [1, "Quantity must be at least 1"],
+                validate: {
+                    validator: Number.isInteger,
+                    message: "Quantity must be an integer",
+                },
             },
             price: {
                 type: Number,
-                required: [true, "Product price is required"],
                 min: [0, "Product price cannot be negative"],
             },
         },
@@ -34,11 +37,28 @@ const cartSchema = new mongoose.Schema({
     },
 }, { timestamps: true, collection: "Carts" });
 
-cartSchema.pre("save", function (next) {
-    this.totalPrice = this.products.reduce((total, product) => {
-        return total + product.quantity * product.price;
-    }, 0);
-    next();
+cartSchema.pre("save", async function (next) {
+    try {
+        const Product = mongoose.model("Product");
+
+        for (const item of this.products) {
+            if (!item.price) {
+                const product = await Product.findById(item.product_id);
+                if (!product) {
+                    throw new Error(`Product with ID ${item.product_id} not found.`);
+                }
+                item.price = product.price;
+            }
+        }
+
+        this.totalPrice = this.products.reduce((total, item) => {
+            return total + item.quantity * item.price;
+        }, 0);
+
+        next();
+    } catch (error) {
+        next(error);
+    }
 });
 
 export const Cart = mongoose.model("Cart", cartSchema);

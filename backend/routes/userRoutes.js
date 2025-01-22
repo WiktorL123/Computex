@@ -13,11 +13,11 @@ export const usersRouter = express.Router();
 
 usersRouter.post('/register', register)
 
-usersRouter.get('/:id/profile', verifyTokenMiddleware, getUserProfile )
-usersRouter.put('/:id/profile', verifyTokenMiddleware, updateUserProfile )
-usersRouter.delete('/:id/profile', verifyTokenMiddleware, deleteUserProfile)
+usersRouter.get('/profile', verifyTokenMiddleware, getUserProfile )
+usersRouter.put('/profile', verifyTokenMiddleware, updateUserProfile )
+usersRouter.delete('/profile', verifyTokenMiddleware, deleteUserProfile)
 
-usersRouter.get('/:id/addresses', verifyTokenMiddleware, getUserAddresses )
-usersRouter.post('/:id/addresses', verifyTokenMiddleware, addUserAddress )
-usersRouter.put('/:id/addresses/:addressId', verifyTokenMiddleware, updateUserAddress )
-usersRouter.delete('/:id/addresses/:addressId', verifyTokenMiddleware, deleteUserAddress)
+usersRouter.get('/addresses', verifyTokenMiddleware, getUserAddresses )
+usersRouter.post('/addresses', verifyTokenMiddleware, addUserAddress )
+usersRouter.put('/addresses/:addressId', verifyTokenMiddleware, updateUserAddress )
+usersRouter.delete('/addresses/:addressId', verifyTokenMiddleware, deleteUserAddress)

@@ -1,10 +1,12 @@
 import { Product } from "../models/Product.js";
-import { Category } from "../models/Category.js";
 import mongoose from "mongoose";
 
 export const getAllProducts = async (req, res, next) => {
     try {
-        const products = await Product.find({});
+        const products = await Product.find({}).populate({
+            path: "category_id",
+            select: "name"
+        });
         if (!products.length) {
             return res.status(404).json({ message: "No products found" });
         }

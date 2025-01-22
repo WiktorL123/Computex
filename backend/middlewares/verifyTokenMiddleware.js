@@ -21,7 +21,7 @@ export const verifyTokenMiddleware = (req, res, next) => {
         req.user = decoded;
 
         console.log("User role:", req.user.role);
-
+        console.log("id:", req.user.id);
         console.log('user role: ', req.user.role);
         next()
 

@@ -3,14 +3,9 @@ import { Cart } from "../models/Cart.js";
 import mongoose from "mongoose";
 
 
-
 export const getCart = async (req, res, next) => {
     try {
-        const { userId } = req.params;
-
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).json({ message: "Invalid user ID" });
-        }
+        const userId = req.user.id;
 
         const cart = await Cart.findOne({ user_id: userId }).populate("products.product_id");
 
@@ -18,22 +13,35 @@ export const getCart = async (req, res, next) => {
             return res.status(404).json({ message: "Cart not found" });
         }
 
-        res.status(200).json(cart);
+        // Zmapowanie produktów na bardziej czytelny format
+        const cartResponse = {
+            ...cart._doc,
+            products: cart.products.map((item) => ({
+                ...item._doc,
+                product: item.product_id,
+                product_id: undefined, // Usunięcie oryginalnego pola
+            })),
+        };
+
+        res.status(200).json(cartResponse);
     } catch (error) {
         next(error);
     }
 };
 
+
 export const addProductToCart = async (req, res, next) => {
     try {
-        const { userId } = req.params;
-        const { product_id, quantity, price } = req.body;
+        console.log("Request user in addProductToCart:", req.user); // Logowanie danych użytkownika
 
-        if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(product_id)) {
-            return res.status(400).json({ message: "Invalid user ID or product ID" });
+        const userId = req.user.id;
+        const { product_id, quantity } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(product_id)) {
+            return res.status(400).json({ message: "Invalid product ID" });
         }
-        if (quantity < 1 || price < 0) {
-            return res.status(400).json({ message: "Invalid quantity or price" });
+        if (quantity < 1) {
+            return res.status(400).json({ message: "Invalid quantity" });
         }
 
         let cart = await Cart.findOne({ user_id: userId });
@@ -41,7 +49,7 @@ export const addProductToCart = async (req, res, next) => {
         if (!cart) {
             cart = new Cart({
                 user_id: userId,
-                products: [{ product_id, quantity, price }],
+                products: [{ product_id, quantity }],
             });
         } else {
             const existingProduct = cart.products.find(
@@ -51,38 +59,48 @@ export const addProductToCart = async (req, res, next) => {
             if (existingProduct) {
                 existingProduct.quantity += quantity;
             } else {
-                cart.products.push({ product_id, quantity, price });
+                cart.products.push({ product_id, quantity });
             }
         }
-
 
         await cart.save();
 
         res.status(200).json({ message: "Product added to cart successfully", cart });
     } catch (error) {
+        console.error("Error in addProductToCart:", error);
         next(error);
     }
 };
 
 export const removeItemFromCart = async (req, res, next) => {
     try {
-        const { userId } = req.params;
+        const userId = req.user.id; // Pobieranie user_id z JWT tokena
         const { product_id } = req.body;
 
-        if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(product_id)) {
-            return res.status(400).json({ message: "Invalid user ID or product ID" });
+        // Walidacja `product_id`
+        if (!mongoose.Types.ObjectId.isValid(product_id)) {
+            return res.status(400).json({ message: "Invalid product ID" });
         }
 
+        // Znalezienie koszyka użytkownika
         const cart = await Cart.findOne({ user_id: userId });
 
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
         }
 
+        // Filtrowanie produktów w koszyku
+        const initialLength = cart.products.length;
         cart.products = cart.products.filter(
             (product) => product.product_id.toString() !== product_id
         );
 
+        // Sprawdzenie, czy produkt został usunięty
+        if (cart.products.length === initialLength) {
+            return res.status(404).json({ message: "Product not found in cart" });
+        }
+
+        // Zapisanie zmian
         await cart.save();
 
         res.status(200).json({ message: "Product removed from cart successfully", cart });
@@ -91,21 +109,20 @@ export const removeItemFromCart = async (req, res, next) => {
     }
 };
 
-export const clearCart = async (req, res) => {
+export const clearCart = async (req, res, next) => {
     try {
-        const  userId  = req.params.userId;
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            console.log('dupa')
-            return res.status(400).json({ message: "Invalid user ID" });
-        }
-        const cart = await Cart.findOne({ userId });
-        console.log(cart)
+        const userId = req.user.id; // Pobranie user_id z JWT tokena
+
+        const cart = await Cart.findOne({ user_id: userId });
+
         if (!cart) {
             return res.status(404).json({ error: "Cart not found." });
         }
 
-        cart.items = [];
+        // Wyczyść produkty i zresetuj całkowitą cenę
+        cart.products = [];
         cart.totalPrice = 0;
+
         await cart.save();
 
         return res.status(200).json({ message: "Cart cleared.", cart });

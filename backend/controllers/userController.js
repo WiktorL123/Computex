@@ -3,43 +3,48 @@ import {User} from "../models/User.js";
 import mongoose, {isValidObjectId} from "mongoose";
 import {Cart} from "../models/Cart.js";
 
+
 export const register = async (req, res, next) => {
-
     try {
-        const {name, second_name, email, password, addresses} = req.body;
-        if (!name || !second_name || !email  || !password) {
-            return res.status(400).send({error: 'Please enter fill required fields'});
+        const { name, second_name, email, password, addresses } = req.body;
+
+        // Walidacja danych wejściowych
+        if (!name || !second_name || !email || !password) {
+            return res.status(400).send({ error: "Please fill in all required fields" });
         }
-        const existingUser = await User.findOne({ email: email })
+
+        // Sprawdzenie, czy użytkownik o podanym e-mailu już istnieje
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).send({error: `User with email ${email} already exists`});
+            return res.status(400).send({ error: `User with email ${email} already exists` });
         }
 
+        // Tworzenie nowego użytkownika
+        const newUser = new User({
+            name,
+            second_name,
+            email,
+            password,
+            addresses,
+        });
 
-        const newUser = new User(
-            {
-                name,
-                second_name,
-                email,
-                password,
-                addresses,
-            }
-        )
+        const savedUser = await newUser.save(); // Zapis nowego użytkownika i przypisanie do zmiennej
 
-       await newUser.save()
+        // Tworzenie koszyka dla nowego użytkownika
+        const newCart = new Cart({ user_id: savedUser._id });
+        await newCart.save();
 
-        const newCart = new Cart({userId: savedUser._id})
-        await newCart.save()
-        return res.status(200).send({message: 'User saved successfully'})
-    }
-    catch (error) {
+        return res.status(200).send({ message: "User saved successfully" });
+    } catch (error) {
+        console.error("Error in register:", error.message);
         next(error);
     }
-}
+};
+
 
 export const getUserProfile = async (req, res, next) => {
     try {
-        const userId = req.params.id;
+        const userId = req.user.id;
 
         if (!userId || !isValidObjectId(userId)) {
             return res.status(400).json({message: 'id no provided or invalid'})
@@ -86,7 +91,7 @@ export const getAllUsers = async (req, res, next) => {
 
 export const deleteUserProfile = async (req, res, next) => {
     try {
-        const userId = req.params.id;
+        const userId = req.user.id;
         if (!userId || !isValidObjectId(userId)) {
             return res.status(400).json({message: 'id no provided or invalid'})
         }
@@ -107,7 +112,8 @@ export const deleteUserProfile = async (req, res, next) => {
 
 export const getUserAddresses = async (req, res, next) => {
     try {
-        const userId = req.params.id;
+        const userId = req.user.id;
+
         if (!userId || !isValidObjectId(userId)) {
             return res.status(400).json({message: 'id no provided or invalid'})
         }
@@ -136,7 +142,7 @@ export const getUserAddresses = async (req, res, next) => {
 export const updateUserProfile = async (req, res, next) => {
     try {
 
-        const userId = req.params.id;
+        const userId = req.user.id;
 
         const {name, second_name, email} = req.body;
 
@@ -160,7 +166,8 @@ export const updateUserProfile = async (req, res, next) => {
 
 export const updateUserAddress = async (req, res) => {
     try {
-        const { id, addressId } = req.params;
+        const {addressId } = req.params;
+        const id = req.user.id
         const { street, city, country, zip_code } = req.body;
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
@@ -195,7 +202,8 @@ export const updateUserAddress = async (req, res) => {
 
 export const deleteUserAddress = async (req, res, next) => {
     try {
-        const {id, addressId} = req.params;
+        const { addressId} = req.params;
+        const id = req.user.id;
         if (!id || !isValidObjectId(id)) {
             return res.status(400).json({message: 'id no provided or invalid'})
         }
@@ -221,9 +229,9 @@ export const deleteUserAddress = async (req, res, next) => {
 
 export const addUserAddress = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const  id  = req.user.id;
 
-        if (!id || !isValidObjectId(id)) {
+        if (!id ) {
             return res.status(400).json({ message: "id no provided or invalid" });
         }
 

@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import {addressSchema} from "./User.js";
-import calculateTotalPrize from "../middlewares/calculateTotalPrize.js";
 
 const orderSchema = new mongoose.Schema({
     user_id: {
@@ -18,13 +17,17 @@ const orderSchema = new mongoose.Schema({
             quantity: {
                 type: Number,
                 required: true,
-                min: 1
+                min: 1,
+                validate: {
+                    validator: Number.isInteger,
+                    message: "Quantity must be a positive integer"
+                }
             }
         }
     ],
     status: {
         type: String,
-        enum: ["pending", "completed", "rejected"],
+        enum: ["pending", "completed", "rejected", "cancelled", "ordered"],
         default: "pending"
     },
     totalPrice: {

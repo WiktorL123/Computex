@@ -1,5 +1,7 @@
 'use client';
 
+
+import React, {useState} from 'react';
 import Image from 'next/image';
 import ThemeSwitcher from '@/app/components/ThemeSwitcher';
 import { ShoppingCartIcon, UserCircleIcon } from '@heroicons/react/solid';
@@ -7,8 +9,33 @@ import SearchInput from '@/app/components/SearchInput';
 import ProfileButton from "@/app/components/ProfileButton";
 
 export default function Header() {
-    const aaa = '';
+    const [isDroppedDown, setIsDroppedDown] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const user = 'Maniek';
     const amount = 10;
+
+    const toggleDropDown = () => {
+        setIsDroppedDown((prev)=>!prev);
+    }
+    const handleLogin = () =>{
+        alert('przekierowanie do logowania')
+        setIsDroppedDown(false);
+    }
+
+    const handleRegister = () =>{
+        alert('przekierowanie do rejestracji')
+        setIsDroppedDown(false);
+    }
+    const handleProfile = () =>{
+        alert('przekierowanie do profile')
+        setIsDroppedDown(false);
+    }
+
+    const handleLogout = () => {
+        alert('wylogowano')
+        setIsLoggedIn(false);
+        setIsDroppedDown(false);
+    }
 
     return (
         <header className="bg-white dark:bg-dark px-4 py-2 m-0">
@@ -22,7 +49,7 @@ export default function Header() {
                         objectFit={'contain'}
                     />
                 </div>
-                <SearchInput className="w-2/3 flex flex-row3" placeholder="Wyszukaj produkt" />
+                <SearchInput className="w-2/3 flex flex-row3 mx-2" placeholder="Wyszukaj produkt" />
                 <div className="flex flex-row items-center  space-x-4 flex-shrink-0">
                     <div className="relative">
                         <ShoppingCartIcon className="h-8 w-8 text-gray-900 dark:text-white" />
@@ -34,12 +61,60 @@ export default function Header() {
                     </div>
                     <ProfileButton
                         className="flex flex-row justify-center"
-                        onClick={() => alert("Przekierowanie do profilu użytkownika")}
+                        onClick={toggleDropDown}
                     />
-                    <span className={'text-sm w-12'}>Witaj {aaa ? aaa : 'Zaloguj się'}</span>
+                    <span className={'text-sm w-12'}>Witaj, {isLoggedIn? user : 'Zaloguj się'}</span>
                     <ThemeSwitcher
                         className="flex flex-row justify-end"
                     />
+                    {isDroppedDown && (
+                        <div className='xs:absolute top-20 right-20 absolute top-20 right-20 bg-white dark:bg-gray-800 shadow-lg rounded-md p-4 z-50'>
+                            {isLoggedIn ? (
+                                <ul className='space-y-2'>
+                                    <li>
+                                        <button
+                                            className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
+                                            onClick={handleProfile}>
+                                            Moj Profil
+
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
+                                             onClick={handleLogout}>
+                                            Wyloguj się
+
+                                        </button>
+                                    </li>
+                                </ul>
+                            ): (
+                                <ul className='space-y-2'>
+                                    <li>
+                                        <button
+                                            className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
+                                            onClick={handleLogin}
+                                        >
+                                            Zaloguj
+
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
+                                            onClick={handleRegister}
+                                        >
+
+                                            Zarejestruj
+
+                                        </button>
+                                    </li>
+                                </ul>
+                            )}
+
+                        </div>
+                    )}
+
                 </div>
             </div>
 
@@ -55,17 +130,64 @@ export default function Header() {
                     </div>
                     <div className="flex flex-row items-center space-x-4 ">
                         <div className="relative flex flex-row justify-around  ">
-                            <ShoppingCartIcon className="h-6 w-6 text-gray-900 dark:text-white" />
+                            <ShoppingCartIcon className="h-6 w-6 text-gray-900 dark:text-white"/>
                             <span
                                 className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
                             >
                                 {amount}
                             </span>
                         </div>
-                        <ProfileButton onClick={() => alert("Przekierowanie do profilu użytkownika")} />
+                        <ProfileButton onClick={toggleDropDown}/>
 
-                        <span>Witaj {aaa ? aaa : 'Zaloguj się'}</span>
-                        <ThemeSwitcher />
+                        <span className={'text-sm w-12'}>Witaj, {user ? user : 'Zaloguj się'}</span>
+                        <ThemeSwitcher/>
+                        {isDroppedDown && (
+                            <div className='xs:absolute top-20 right-20 absolute top-20 right-20 bg-white dark:bg-gray-800 shadow-lg rounded-md p-4 z-50'>
+                                {isLoggedIn ? (
+                                    <ul className='space-y-2'>
+                                        <li>
+                                            <button
+                                                className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
+                                                onClick={handleProfile}>
+                                                Moj Profil
+
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button
+                                                className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
+                                                onClick={handleLogout}>
+                                                Wyloguj się
+
+                                            </button>
+                                        </li>
+                                    </ul>
+                                ): (
+                                    <ul className='space-y-2'>
+                                        <li>
+                                            <button
+                                                className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
+                                                onClick={handleLogin}
+                                            >
+                                                Zaloguj
+
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button
+                                                className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
+                                                onClick={handleRegister}
+                                            >
+
+                                                Zarejestruj
+
+                                            </button>
+                                        </li>
+                                    </ul>
+                                )}
+
+                            </div>
+                        )}
                     </div>
                 </div>
                 <SearchInput className="mt-4 w-full flex flex-row" placeholder="Wyszukaj produkt" />

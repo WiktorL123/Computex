@@ -9,10 +9,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        dark: '#121212'
+        dark: '#2b2d30',
+        darkSecondary: '#121212'
       },
       screens: {
-        xs: '570px'
+        xs: '670px'
       }
     },
   },

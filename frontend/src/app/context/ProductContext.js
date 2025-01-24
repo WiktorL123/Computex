@@ -12,9 +12,8 @@ export const ProductProvider = ({ children }) => {
     const fetchProducts = async (queryParams = {}) => {
         setLoading(true);
         try {
-            // Usuń undefined z queryParams
             const cleanQueryParams = Object.fromEntries(
-                Object.entries(queryParams).filter(([_, value]) => value !== undefined)
+                Object.entries(queryParams).filter(([_, value]) => value !== undefined && value !== null)
             );
 
             const hasQueryParams = Object.keys(cleanQueryParams).length > 0;

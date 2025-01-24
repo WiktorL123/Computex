@@ -30,14 +30,14 @@ export const getProductById = async (req, res, next) => {
 
 export const getFilteredProducts = async (req, res, next) => {
     try {
-        const {category_id, minPrice, maxPrice, sortBy, order, ...customFilters} = req.query;
-        const filter = {}
+        const { category_id, minPrice, maxPrice, sortBy, order, ...customFilters } = req.query;
+        const filter = {};
 
-        if (category_id) {
+        if (category_id && category_id !== "all") {
             if (!mongoose.Types.ObjectId.isValid(category_id)) {
                 return res.status(400).json({ message: "Invalid category_id" });
             }
-            filter.category_id = new mongoose.Types.ObjectId(category_id); // Rzutowanie na ObjectId
+            filter.category_id = new mongoose.Types.ObjectId(category_id);
         }
 
         if (minPrice) {
@@ -47,27 +47,30 @@ export const getFilteredProducts = async (req, res, next) => {
         if (maxPrice) {
             filter.price = { ...filter.price, $lte: parseFloat(maxPrice) };
         }
-        Object.keys(customFilters).forEach(key => {
-            filter[`filters.${key}`] = customFilters[key];
-        })
-        const sort = { }
 
+        Object.keys(customFilters).forEach((key) => {
+            filter[`filters.${key}`] = customFilters[key];
+        });
+
+        const sort = {};
         if (sortBy) {
             sort[sortBy] = order === "desc" ? -1 : 1;
         }
+
         const products = await Product.find(filter).sort(sort).populate({
             path: "category_id",
             select: "name",
-        })
+        });
 
-        if (!products.length)
+        if (!products.length) {
             return res.status(404).json({ message: "No products found" });
-        res.status(200).json({products});
+        }
+
+        res.status(200).json({ products });
+    } catch (error) {
+        next(error);
     }
-    catch (error) {
-        next(error)
-    }
-}
+};
 
 export const addNewProduct = async (req, res, next) => {
     try {

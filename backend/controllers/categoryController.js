@@ -8,7 +8,7 @@ export const getAllCategories = async (req, res, next) => {
         }
         res.status(200).json({ message: "Category List", categories });
     } catch (error) {
-        next(createError(500, "Failed to fetch categories", error.message));
+        next(error);
     }
 };
 
@@ -39,7 +39,7 @@ export const addNewCategory = async (req, res, next) => {
 
         res.status(201).json({ message: "Category added successfully", category: newCategory });
     } catch (error) {
-        next(createError(500, "Failed to add category", error.message));
+        next(error);
     }
 };
 
@@ -58,7 +58,7 @@ export const updateCategory = async (req, res, next) => {
 
         res.status(200).json({ message: "Category updated successfully", category });
     } catch (error) {
-        next(createError(500, "Failed to update category", error.message));
+        next(error);
     }
 };
 
@@ -75,6 +75,6 @@ export const deleteCategory = async (req, res, next) => {
 
         res.status(200).json({ message: "Category deleted successfully", category });
     } catch (error) {
-        next(createError(500, "Failed to delete category", error.message));
+        next(error);
     }
 };

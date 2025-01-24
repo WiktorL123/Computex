@@ -3,10 +3,13 @@
 import Image from "next/image";
 import { useProduct } from "@/app/context/ProductContext";
 import {ClipLoader} from 'react-spinners'
+import {useEffect} from "react";
 
 export default function Home() {
-  const { loading, error, products } = useProduct();
-
+  const { loading, error, products, selectCategory, selectedCategory } = useProduct();
+  useEffect(() => {
+      selectCategory(null)
+  },[selectCategory, selectedCategory]);
   if (loading) {
     return (
         <div className="flex justify-center items-center h-screen">

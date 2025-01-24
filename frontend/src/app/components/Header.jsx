@@ -25,14 +25,15 @@ export default function Header({toggleNavbar, isNavBarOpen}) {
     return (
         <header className="bg-white dark:bg-dark px-4 py-2 m-0">
             <div className="hidden xs:flex flex-row justify-between items-center py-2">
-                <div className="relative w-[100px] h-[100px] flex-shrink-0">
+                <button className="relative w-[100px] h-[100px] flex-shrink-0"
+                onClick={() =>router.push('/')}>
                     <Image
                         src={'/logo_computex.png'}
                         alt={'logo_computex'}
                         layout={'fill'}
                         objectFit={'contain'}
                     />
-                </div>
+                </button>
                 <SearchInput className="w-2/3 flex flex-row3 mx-2" placeholder="Wyszukaj produkt" />
                 <div className="flex flex-row items-center  space-x-4 flex-shrink-0">
                     <div className="relative">
@@ -105,14 +106,15 @@ export default function Header({toggleNavbar, isNavBarOpen}) {
 
             <div className="flex flex-col xs:hidden">
                 <div className="flex flex-row justify-between items-center">
-                    <div className="relative w-[100px] h-[100px] flex-shrink-0">
+                    <button className="relative w-[100px] h-[100px] flex-shrink-0"
+                        onClick={()=>router.push('/')}>
                         <Image
                             src={'/logo_computex.png'}
                             alt={'logo_computex'}
                             layout={'fill'}
                             objectFit={'contain'}
                         />
-                    </div>
+                    </button>
                     <div className="flex flex-row items-center space-x-4 ">
                         <div className="relative flex flex-row justify-around  ">
                             <ShoppingCartIcon className="h-6 w-6 text-gray-900 dark:text-white"/>

@@ -10,7 +10,7 @@ export const getAllProducts = async (req, res, next) => {
         if (!products.length) {
             return res.status(404).json({ message: "No products found" });
         }
-        res.status(200).json(products);
+        res.status(200).json({message: "products found", products});
     } catch (error) {
         next(error)    }
 };
@@ -52,11 +52,14 @@ export const getFilteredProducts = async (req, res, next) => {
         if (sortBy) {
             sort[sortBy] = order === "desc" ? -1 : 1;
         }
-        const products = await Product.find(filter).sort(sort)
+        const products = await Product.find(filter).sort(sort).populate({
+            path: "category_id",
+            select: "name",
+        })
 
         if (!products.length)
             return res.status(404).json({ message: "No products found" });
-        res.status(200).json({message: "products found", products});
+        res.status(200).json({products});
     }
     catch (error) {
         next(error)

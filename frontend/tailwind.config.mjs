@@ -13,7 +13,8 @@ export default {
         darkSecondary: '#121212'
       },
       screens: {
-        xs: '670px'
+        xs: '705px',
+        s: '815px'
       }
     },
   },

@@ -4,42 +4,26 @@
 import React, {useState} from 'react';
 import Image from 'next/image';
 import ThemeSwitcher from '@/app/components/ThemeSwitcher';
-import { ShoppingCartIcon, UserCircleIcon } from '@heroicons/react/solid';
+import {MenuIcon, ShoppingCartIcon, UserCircleIcon} from '@heroicons/react/solid';
 import SearchInput from '@/app/components/SearchInput';
 import ProfileButton from "@/app/components/ProfileButton";
+import {useRouter} from 'next/navigation';
 
-export default function Header() {
+export default function Header({toggleNavbar, isNavBarOpen}) {
     const [isDroppedDown, setIsDroppedDown] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const user = 'Maniek';
     const amount = 10;
+
+    const router = useRouter();
 
     const toggleDropDown = () => {
         setIsDroppedDown((prev)=>!prev);
     }
-    const handleLogin = () =>{
-        alert('przekierowanie do logowania')
-        setIsDroppedDown(false);
-    }
 
-    const handleRegister = () =>{
-        alert('przekierowanie do rejestracji')
-        setIsDroppedDown(false);
-    }
-    const handleProfile = () =>{
-        alert('przekierowanie do profile')
-        setIsDroppedDown(false);
-    }
-
-    const handleLogout = () => {
-        alert('wylogowano')
-        setIsLoggedIn(false);
-        setIsDroppedDown(false);
-    }
 
     return (
         <header className="bg-white dark:bg-dark px-4 py-2 m-0">
-            {/* Pasek dla dużych ekranów */}
             <div className="hidden xs:flex flex-row justify-between items-center py-2">
                 <div className="relative w-[100px] h-[100px] flex-shrink-0">
                     <Image
@@ -67,6 +51,7 @@ export default function Header() {
                     <ThemeSwitcher
                         className="flex flex-row justify-end"
                     />
+
                     {isDroppedDown && (
                         <div className='xs:absolute top-20 right-20 absolute top-20 right-20 bg-white dark:bg-gray-800 shadow-lg rounded-md p-4 z-50'>
                             {isLoggedIn ? (
@@ -74,7 +59,7 @@ export default function Header() {
                                     <li>
                                         <button
                                             className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
-                                            onClick={handleProfile}>
+                                        >
                                             Moj Profil
 
                                         </button>
@@ -82,7 +67,7 @@ export default function Header() {
                                     <li>
                                         <button
                                             className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
-                                             onClick={handleLogout}>
+                                        >
                                             Wyloguj się
 
                                         </button>
@@ -93,8 +78,9 @@ export default function Header() {
                                     <li>
                                         <button
                                             className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
-                                            onClick={handleLogin}
+                                            onClick={()=>router.push('auth/login')}
                                         >
+
                                             Zaloguj
 
                                         </button>
@@ -102,7 +88,6 @@ export default function Header() {
                                     <li>
                                         <button
                                             className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
-                                            onClick={handleRegister}
                                         >
 
                                             Zarejestruj
@@ -139,8 +124,16 @@ export default function Header() {
                         </div>
                         <ProfileButton onClick={toggleDropDown}/>
 
-                        <span className={'text-sm w-12'}>Witaj, {user ? user : 'Zaloguj się'}</span>
+                        <span className={'text-sm w-12'}>Witaj, {isLoggedIn ? user : 'Zaloguj się'}</span>
                         <ThemeSwitcher/>
+                        <div className='flex flex-row items-center space-x-4 relative'>
+                            <button
+                                className='xs:hidden text-gray-900 dark:text-gray-white'
+                                onClick={toggleNavbar}
+                            >
+                            <MenuIcon className='w-6 h-6'/>
+                            </button>
+                        </div>
                         {isDroppedDown && (
                             <div className='xs:absolute top-20 right-20 absolute top-20 right-20 bg-white dark:bg-gray-800 shadow-lg rounded-md p-4 z-50'>
                                 {isLoggedIn ? (
@@ -148,7 +141,7 @@ export default function Header() {
                                         <li>
                                             <button
                                                 className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
-                                                onClick={handleProfile}>
+                                            >
                                                 Moj Profil
 
                                             </button>
@@ -156,7 +149,7 @@ export default function Header() {
                                         <li>
                                             <button
                                                 className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
-                                                onClick={handleLogout}>
+                                            >
                                                 Wyloguj się
 
                                             </button>
@@ -167,7 +160,6 @@ export default function Header() {
                                         <li>
                                             <button
                                                 className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
-                                                onClick={handleLogin}
                                             >
                                                 Zaloguj
 
@@ -176,7 +168,6 @@ export default function Header() {
                                         <li>
                                             <button
                                                 className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
-                                                onClick={handleRegister}
                                             >
 
                                                 Zarejestruj

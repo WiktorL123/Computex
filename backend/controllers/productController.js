@@ -30,7 +30,7 @@ export const getProductById = async (req, res, next) => {
 
 export const getFilteredProducts = async (req, res, next) => {
     try {
-        const {category_id, minPrice, maxPrice, sortBy, order} = req.query;
+        const {category_id, minPrice, maxPrice, sortBy, order, ...customFilters} = req.query;
         const filter = {}
 
         if (category_id) {
@@ -47,6 +47,9 @@ export const getFilteredProducts = async (req, res, next) => {
         if (maxPrice) {
             filter.price = { ...filter.price, $lte: parseFloat(maxPrice) };
         }
+        Object.keys(customFilters).forEach(key => {
+            filter[`filters.${key}`] = customFilters[key];
+        })
         const sort = { }
 
         if (sortBy) {

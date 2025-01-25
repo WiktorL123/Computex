@@ -23,7 +23,6 @@ export default function AuthHeader() {
                     />
                 </button>
 
-                {/* ThemeSwitcher */}
                 <ThemeSwitcher />
             </div>
         </header>

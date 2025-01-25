@@ -79,7 +79,7 @@ export default function Header({toggleNavbar, isNavBarOpen}) {
                                     <li>
                                         <button
                                             className='w-full text-left text-gray-900 dark:white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded'
-                                            onClick={()=>router.push('auth/login')}
+                                            onClick={()=>router.push('/auth/login')}
                                         >
 
                                             Zaloguj
@@ -103,6 +103,9 @@ export default function Header({toggleNavbar, isNavBarOpen}) {
 
                 </div>
             </div>
+
+
+
 
             <div className="flex flex-col xs:hidden">
                 <div className="flex flex-row justify-between items-center">

@@ -30,7 +30,7 @@ export const getProductById = async (req, res, next) => {
 
 export const getFilteredProducts = async (req, res, next) => {
     try {
-        const { category_id, minPrice, maxPrice, sortBy, order, ...customFilters } = req.query;
+        const { category_id, minPrice, maxPrice, sortBy, order, query, ...customFilters } = req.query;
         const filter = {};
 
         if (category_id && category_id !== "all") {
@@ -38,6 +38,10 @@ export const getFilteredProducts = async (req, res, next) => {
                 return res.status(400).json({ message: "Invalid category_id" });
             }
             filter.category_id = new mongoose.Types.ObjectId(category_id);
+        }
+
+        if (query){
+            filter.name = {$regex: query, $options: "i"};
         }
 
         if (minPrice) {
@@ -74,19 +78,18 @@ export const getFilteredProducts = async (req, res, next) => {
 
 export const getSuggestions = async (req, res, next) => {
     try {
-        const query = req.query.query; // Zakładamy, że parametr jest w formacie ?query=p
+        const query = req.query.query;
         if (!query) {
             return res.status(400).json({ suggestions: [] });
         }
 
-        // Wyszukiwanie po nazwie produktu
-        const products = await Product.find({
-            name: { $regex: query, $options: "i" } // Dopasowanie do nazwy (ignorowanie wielkości liter)
-        })
-            .select("name _id") // Wybieramy tylko nazwę i _id produktu
-            .limit(10); // Ograniczamy liczbę wyników do 10
 
-        // Mapowanie wyników na odpowiednią strukturę
+        const products = await Product.find({
+            name: { $regex: query, $options: "i" }
+        })
+            .select("name _id")
+            .limit(10);
+
         const suggestions = products.map((product) => ({
             id: product._id,
             name: product.name,

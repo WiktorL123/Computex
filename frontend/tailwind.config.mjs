@@ -10,7 +10,8 @@ export default {
     extend: {
       colors: {
         dark: '#2b2d30',
-        darkSecondary: '#121212'
+        darkSecondary: '#121212',
+        darkProduct: 'rgba(40,40,40,40.89)',
       },
       screens: {
         xs: '705px',

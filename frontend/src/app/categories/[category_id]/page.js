@@ -5,8 +5,11 @@ import { useProduct } from "@/app/context/ProductContext";
 import { ClipLoader } from "react-spinners";
 import { useParams } from "next/navigation";
 import Filter from "@/app/components/Filter";
+import Product from "@/app/components/Product";
+import {useRouter} from "next/navigation";
 
 export default function CategoryPage() {
+        const router = useRouter();
         const params = useParams();
         const category_id = params.category_id; // Może być "all" lub konkretne ID
 
@@ -118,24 +121,19 @@ export default function CategoryPage() {
                     </aside>
 
                     <section className="w-3/4 p-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4'>
                                     {products.map((product) => (
-                                        <div key={product.id} className="border p-4 rounded shadow">
-                                                <h2 className="text-lg font-bold">{product.name}</h2>
-                                                <p>{product.description}</p>
-                                                <p className="text-gray-500">Cena: {product.price} PLN</p>
-                                                <ul className="mt-2">
-                                                        <h3 className="text-sm font-semibold mb-2">Filtry:</h3>
-                                                        {product.filters &&
-                                                            Object.entries(product.filters).map(([key, value]) => (
-                                                                <li key={key} className="text-sm text-gray-700">
-                                                                        <span className="font-medium">{key}:</span> {value}
-                                                                </li>
-                                                            ))}
-                                                </ul>
+                                        <div
+                                            key={product.id}
+                                            onClick={() => router.push(`/products/${product.id}`)}
+                                        >
+
+                                                <Product product={product}/>
                                         </div>
                                     ))}
+
                             </div>
+
                     </section>
             </div>
         );

@@ -1,6 +1,6 @@
 import Filter from "@/app/components/Filter";
 
-export default function CategoryLayout({children, params}){
+export default function CategoryLayout({children}){
     return (
         <div>
             <main>

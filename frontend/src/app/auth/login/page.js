@@ -1,8 +1,8 @@
 export default function LoginPage() {
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">Logowanie</h1>
-            <form>
+        <div className={'flex-col items-center justify-center'}>
+            <h1 className="text-2xl font-bold mb-4 text-center">Logowanie</h1>
+            <form className={'w-1/2 '}>
                 <div className="mb-4">
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                         Email

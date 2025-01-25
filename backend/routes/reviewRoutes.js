@@ -5,13 +5,18 @@ import {editReview} from "../controllers/reviewController.js";
 import {addReview} from "../controllers/reviewController.js";
 import {deleteReview} from "../controllers/reviewController.js"
 import {verifyTokenMiddleware} from "../middlewares/verifyTokenMiddleware.js";
+import {getReviewsByProductId} from "../controllers/reviewController.js";
+
 export const reviewRouter = express.Router();
 
 
 
 reviewRouter.get('/', getAllReviews )
 
+reviewRouter.get('/product/:productId',  getReviewsByProductId)
+
 reviewRouter.get('/:id',  getReviewById)
+
 
 
 reviewRouter.use(verifyTokenMiddleware);

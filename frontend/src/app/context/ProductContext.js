@@ -4,6 +4,7 @@ const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
+    const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -52,8 +53,60 @@ export const ProductProvider = ({ children }) => {
             setLoading(false);
         }
     };
+    const searchProducts = async (searchTerm) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const queryParams = {
+                query: searchTerm,
+            };
 
-    const fetchSuggestions = async (queryParams = {}) => {}
+            const url = `http://localhost:4002/api/products/search?${new URLSearchParams(queryParams)}`;
+            const response = await fetch(url, { method: "GET" });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to fetch products");
+            }
+
+            const formattedProducts = data.products.map((product) => ({
+                id: product._id,
+                name: product.name,
+                description: product.description,
+                image: product.images?.[0] || "",
+                price: product.price,
+                stock: product.stock,
+                category: product.category_id?.name || "Brak kategorii",
+                filters: product.filters || {},
+            }));
+
+            setProducts(formattedProducts);
+        } catch (e) {
+            setError(e);
+            console.error("Search error:", e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+    const fetchProductById = async (id) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`http://localhost:4002/api/products/${id}`);
+            if (!response.ok) {
+                throw new Error(data.message || "No product with id "+ id);
+            }
+            const data = await response.json();
+            setProduct(data)
+
+        }
+        catch (error) {
+            setError(error);
+        }
+        finally {
+            setLoading(false);
+        }
+
+    }
     useEffect(() => {
         const queryParams = {
             category_id: selectedCategory || undefined,
@@ -89,7 +142,11 @@ export const ProductProvider = ({ children }) => {
                 updateFilters,
                 fetchProducts,
                 setError,
-                setLoading
+                setLoading,
+                searchProducts,
+                fetchProductById,
+                product,
+                setProduct
             }}
         >
             {children}

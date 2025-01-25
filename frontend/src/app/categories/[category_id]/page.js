@@ -18,16 +18,17 @@ export default function CategoryPage() {
                 customFilters: {},
         });
 
-        // Ustaw kategorię tylko, gdy category_id się zmieni
+
+
+
         useEffect(() => {
                 if (category_id === "all") {
-                        selectCategory(null); // Wszystkie produkty (brak kategorii)
+                        selectCategory(null);
                 } else {
-                        selectCategory(category_id); // Produkty z wybranej kategorii
+                        selectCategory(category_id);
                 }
         }, [category_id]);
 
-        // Budowanie dynamicznych filtrów na podstawie produktów
         useEffect(() => {
                 if (products.length > 0) {
                         const allFilters = products.reduce((acc, product) => {
@@ -49,47 +50,46 @@ export default function CategoryPage() {
                 }
         }, [products]);
 
-        // Obsługa zmiany filtrów
+
         const handleFilterChange = (newFilters) => {
-                // Czyszczenie `customFilters` z pustych wartości
+
                 const cleanedCustomFilters = Object.fromEntries(
                     Object.entries(newFilters.customFilters).map(([key, values]) => [
                             key,
-                            values.filter((val) => val !== ""), // Usuwanie pustych wartości
+                            values.filter((val) => val !== ""),
                     ])
                 );
 
-                // Usuwanie pustych filtrów z `customFilters`
+
                 const nonEmptyCustomFilters = Object.fromEntries(
-                    Object.entries(cleanedCustomFilters).filter(([_, values]) => values.length > 0) // Usuwanie pustych tablic
+                    Object.entries(cleanedCustomFilters).filter(([_, values]) => values.length > 0)
                 );
 
-                // Aktualizacja stanu `selectedFilters`
+
                 setSelectedFilters((prev) => ({ ...prev, ...newFilters }));
 
-                // Budowanie `queryParams`
                 const queryParams = {
-                        category_id: category_id === "all" ? undefined : category_id, // Ustawienie kategorii, jeśli istnieje
+                        category_id: category_id === "all" ? undefined : category_id,
                         minPrice: newFilters.minPrice || undefined,
                         maxPrice: newFilters.maxPrice || undefined,
-                        ...nonEmptyCustomFilters, // Dodanie tylko niepustych `customFilters`
+                        ...nonEmptyCustomFilters,
                 };
 
-                // Usuwanie pustych wartości z `queryParams`
+
                 const filteredQueryParams = Object.fromEntries(
                     Object.entries(queryParams).filter(([_, value]) => value !== undefined && value !== "")
                 );
 
-                // Wywołanie odpowiedniego fetchProducts w zależności od aktywnych filtrów
+
                 if (Object.keys(filteredQueryParams).length === 0) {
-                        // Brak aktywnych filtrów
+
                         if (category_id === "all" || !category_id) {
-                                selectCategory(null); // Wszystkie produkty
+                                selectCategory(null);
                         } else {
-                                selectCategory(category_id); // Produkty dla konkretnej kategorii
+                                selectCategory(category_id);
                         }
                 } else {
-                        // Aktywne filtry
+
                         fetchProducts(filteredQueryParams);
                 }
         };
@@ -108,8 +108,9 @@ export default function CategoryPage() {
 
         return (
             <div className="flex">
-                    <aside className="w-1/4 p-4 bg-gray-100 dark:bg-gray-800">
+                    <aside className="w-1/4 p-4 bg-white dark:bg-dark">
                             <Filter
+                                className="w-1/4"
                                 filters={filters}
                                 selectedFilters={selectedFilters}
                                 onFilterChange={handleFilterChange}

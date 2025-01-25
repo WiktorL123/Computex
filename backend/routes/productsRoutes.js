@@ -5,18 +5,17 @@ import
     getProductById,
     addNewProduct,
     updateProductStock,
-    deleteProduct, updateProduct, getFilteredProducts,
+    deleteProduct, updateProduct, getFilteredProducts, getSuggestions,
 } from "../controllers/productController.js";
 
 import {addSkuToRequest} from "../middlewares/addSkuToRequest.js";
 import {verifyTokenMiddleware} from "../middlewares/verifyTokenMiddleware.js";
 import {addRoleToRequest} from "../middlewares/addRoleToRequest.js";
 import {checkRole} from "../middlewares/checkRole.js";
-import {adminRouter} from "./adminRoutes.js";
 
 export const productsRouter = express.Router();
 
-
+productsRouter.get('/suggestions', getSuggestions)
 productsRouter.get("/search", getFilteredProducts)
 productsRouter.get('/', getAllProducts )
 productsRouter.get('/:id', getProductById)

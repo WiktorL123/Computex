@@ -72,6 +72,32 @@ export const getFilteredProducts = async (req, res, next) => {
     }
 };
 
+export const getSuggestions = async (req, res, next) => {
+    try {
+        const query = req.query.query; // Zakładamy, że parametr jest w formacie ?query=p
+        if (!query) {
+            return res.status(400).json({ suggestions: [] });
+        }
+
+        // Wyszukiwanie po nazwie produktu
+        const products = await Product.find({
+            name: { $regex: query, $options: "i" } // Dopasowanie do nazwy (ignorowanie wielkości liter)
+        })
+            .select("name _id") // Wybieramy tylko nazwę i _id produktu
+            .limit(10); // Ograniczamy liczbę wyników do 10
+
+        // Mapowanie wyników na odpowiednią strukturę
+        const suggestions = products.map((product) => ({
+            id: product._id,
+            name: product.name,
+        }));
+
+        return res.status(200).json(suggestions);
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const addNewProduct = async (req, res, next) => {
     try {
         const { name } = req.body;

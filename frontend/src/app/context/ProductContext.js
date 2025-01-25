@@ -53,6 +53,7 @@ export const ProductProvider = ({ children }) => {
         }
     };
 
+    const fetchSuggestions = async (queryParams = {}) => {}
     useEffect(() => {
         const queryParams = {
             category_id: selectedCategory || undefined,
@@ -87,6 +88,8 @@ export const ProductProvider = ({ children }) => {
                 selectCategory,
                 updateFilters,
                 fetchProducts,
+                setError,
+                setLoading
             }}
         >
             {children}

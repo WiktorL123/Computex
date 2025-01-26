@@ -32,7 +32,7 @@ export const login = async (req, res, next) => {
         //     role: user.role
         // }
 
-        res.status(200).json({token: token, name: user.name, userId: user._id});
+        res.status(200).json({token: token, name: user.name, secondName:user.second_name, userId: user._id, email: user.email});
 
     }
 

@@ -202,30 +202,32 @@ export const updateUserAddress = async (req, res) => {
 
 export const deleteUserAddress = async (req, res, next) => {
     try {
-        const { addressId} = req.params;
+        const { addressId } = req.params;
         const id = req.user.id;
+
         if (!id || !isValidObjectId(id)) {
-            return res.status(400).json({message: 'id no provided or invalid'})
+            return res.status(400).json({ message: 'ID not provided or invalid' });
         }
 
-        const user = await User.findById(id)
+        const user = await User.findById(id);
         if (!user) {
-            return res.status(404).json({message: 'No user found'})
+            return res.status(404).json({ message: 'No user found' });
         }
 
         const address = user.addresses.id(addressId);
         if (!address) {
-            return res.status(404).json({message: 'No user address found'})
+            return res.status(404).json({ message: 'No user address found' });
         }
-        user.addresses.pull(addressId)
-        await user.save()
-        res.status(200).json({ message: "User's deleted successfully", address });
 
+        user.addresses.pull(addressId);
+
+        await user.save({ validateModifiedOnly: true });
+
+        res.status(200).json({ message: "User address deleted successfully", address });
+    } catch (error) {
+        next(error);
     }
-    catch (error) {
-        next(error)
-    }
-}
+};
 
 export const addUserAddress = async (req, res, next) => {
     try {
@@ -238,7 +240,7 @@ export const addUserAddress = async (req, res, next) => {
         const { street, city, country, zip_code } = req.body;
 
         if (!street || !city || !country || !zip_code) {
-            return res.status(400).json({ message: "missing fields" });
+            return res.status(400).json({ error: "missing fields" });
         }
 
         const address = { street, city, country, zip_code };

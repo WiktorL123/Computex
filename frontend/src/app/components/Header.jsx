@@ -1,18 +1,28 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import ThemeSwitcher from '@/app/components/ThemeSwitcher';
-import {MenuIcon, ShoppingCartIcon, UserCircleIcon} from '@heroicons/react/solid';
+import { MenuIcon, ShoppingCartIcon, UserCircleIcon } from '@heroicons/react/solid';
 import SearchInput from '@/app/components/SearchInput';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/app/context/UserContext';
+import {useUserCart} from "@/app/context/UserCartContext";
+import {useBrowserCart} from "@/app/context/BrowserCartContext";
+
 
 export default function Header({ toggleNavbar, isNavBarOpen }) {
     const [isDroppedDown, setIsDroppedDown] = useState(false);
     const { logout, user } = useUser();
-    const amount = 10; // Przykładowa ilość produktów w koszyku
+    const { userCart, fetchUserCart } = useUserCart();
+    const { browserCart } = useBrowserCart();
     const router = useRouter();
+
+    useEffect(() => {
+        if (user) {
+            fetchUserCart();
+        }
+    }, [user]);
 
     const toggleDropDown = () => setIsDroppedDown((prev) => !prev);
 
@@ -23,7 +33,7 @@ export default function Header({ toggleNavbar, isNavBarOpen }) {
                     <li>
                         <button
                             className="w-full text-left text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-1 rounded"
-                            onClick={() => alert('profil')}
+                            onClick={() => router.push(`/profile/${user.userId}`)}
                         >
                             Mój Profil
                         </button>
@@ -60,9 +70,12 @@ export default function Header({ toggleNavbar, isNavBarOpen }) {
         </div>
     );
 
+    const cartItemCount = user
+        ? userCart.reduce((total, item) => total + item.quantity, 0)
+        : browserCart.reduce((total, item) => total + item.quantity, 0);
+
     return (
         <header className="bg-white dark:bg-dark px-4 py-2 m-0">
-            {/* Desktop */}
             <div className="hidden xs:flex flex-row justify-between items-center py-2">
                 <button
                     className="relative w-[100px] h-[100px] flex-shrink-0"
@@ -78,24 +91,26 @@ export default function Header({ toggleNavbar, isNavBarOpen }) {
                 </button>
                 <SearchInput className="w-2/3 flex mx-2" placeholder="Wyszukaj produkt" />
                 <div className="flex items-center space-x-4">
-                    <div className="relative">
-                        <ShoppingCartIcon className="h-8 w-8 text-gray-900 dark:text-white"/>
+                    <button
+                        className="relative"
+                        onClick={()=>router.push('/cart')}
+                    >
+                        <ShoppingCartIcon className="h-8 w-8 text-gray-900 dark:text-white" />
                         <span
                             className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
                         >
-                            {amount}
+                            {cartItemCount}
                         </span>
-                    </div>
+                    </button>
                     <button onClick={toggleDropDown} className="relative">
-                        <UserCircleIcon className="h-8 w-8 text-gray-900 dark:text-white"/>
+                        <UserCircleIcon className="h-8 w-8 text-gray-900 dark:text-white" />
                     </button>
                     <span className={'text-sm'}> Witaj {user ? user.name : 'zaloguj się'}</span>
-                    <ThemeSwitcher/>
+                    <ThemeSwitcher />
                     {isDroppedDown && renderDropdownMenu()}
                 </div>
             </div>
 
-            {/* Mobile */}
             <div className="flex flex-col xs:hidden">
                 <div className="flex justify-between items-center">
                     <button
@@ -111,21 +126,24 @@ export default function Header({ toggleNavbar, isNavBarOpen }) {
                         />
                     </button>
                     <div className="flex items-center space-x-4">
-                        <div className="relative flex items-center justify-around">
-                            <ShoppingCartIcon className="h-6 w-6 text-gray-900 dark:text-white"/>
+                        <button
+                            className="relative flex items-center justify-around"
+                            onClick={()=>router.push('/cart')}
+                        >
+                            <ShoppingCartIcon className="h-6 w-6 text-gray-900 dark:text-white" />
                             <span
                                 className="absolute top-[-5px] right-[-5px] bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
                             >
-                                {amount}
+                                {cartItemCount}
                             </span>
-                        </div>
+                        </button>
                         <button onClick={toggleDropDown}>
-                            <UserCircleIcon className="h-6 w-6 text-gray-900 dark:text-white"/>
+                            <UserCircleIcon className="h-6 w-6 text-gray-900 dark:text-white" />
                         </button>
                         <span className={'text-sm'}> Witaj {user ? user.name : 'zaloguj się'}</span>
-                        <ThemeSwitcher/>
+                        <ThemeSwitcher />
                         <button className="xs:hidden" onClick={toggleNavbar}>
-                            <MenuIcon className="w-6 h-6"/>
+                            <MenuIcon className="w-6 h-6" />
                         </button>
                         {isDroppedDown && renderDropdownMenu()}
                     </div>

@@ -41,7 +41,7 @@ export default function RegisterForm() {
                 password,
                 addresses: street || city || country || zip_code
                     ? [{ street, city, country, zip_code }]
-                    : [], // Jeśli pola adresu są puste, ustaw pustą tablicę
+                    : [],
             };
             register(userData);
         },

@@ -72,7 +72,7 @@ export default function SearchInput({ className, placeholder }) {
     const handleSuggestionClick = (suggestion) => {
         setQuery(suggestion);
         setIsDropdownOpen(false);
-        alert(`produkt: ${suggestion}`)
+        router.push(`/products/${suggestion.id}`);
     };
 
     const handleSearch = () =>{
@@ -123,7 +123,7 @@ export default function SearchInput({ className, placeholder }) {
                             <li
                                 key={suggestion.id}
                                 className="p-2 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => handleSuggestionClick(suggestion.name)}
+                                onClick={() => handleSuggestionClick(suggestion)}
                             >
                                 {suggestion.name}
                             </li>

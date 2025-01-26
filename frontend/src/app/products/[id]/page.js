@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useEffect, useState } from "react";
 import { useProduct } from "@/app/context/ProductContext";
 import { useParams } from "next/navigation";
@@ -7,6 +8,8 @@ import StarRating from "@/app/components/StarRating";
 import { useUser } from "@/app/context/UserContext";
 import { toast } from "react-toastify";
 import { Trash2 } from "lucide-react";
+import { useUserCart } from "@/app/context/UserCartContext";
+import { useBrowserCart } from "@/app/context/BrowserCartContext";
 
 export default function ProductPage() {
     const { id } = useParams();
@@ -19,13 +22,14 @@ export default function ProductPage() {
         setError
     } = useProduct();
     const { user } = useUser();
+    const { addToUserCart } = useUserCart();
+    const { addToBrowserCart } = useBrowserCart();
 
     const [reviews, setReviews] = useState([]);
     const [averageRating, setAverageRating] = useState(0);
     const [newReview, setNewReview] = useState({ rating: "", comment: "" });
     const [error, setReviewError] = useState(null);
 
-    // Fetch reviews
     const fetchReviews = async () => {
         try {
             setLoading(true);
@@ -44,7 +48,6 @@ export default function ProductPage() {
         }
     };
 
-    // Submit review
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -76,7 +79,6 @@ export default function ProductPage() {
         }
     };
 
-
     const handleDeleteReview = async (reviewId) => {
         try {
             const response = await fetch(`http://localhost:4002/api/reviews/${reviewId}`, {
@@ -93,9 +95,18 @@ export default function ProductPage() {
             }
 
             toast.success("Recenzja została usunięta");
-            fetchReviews(); // Odśwież recenzje
+            fetchReviews();
         } catch (error) {
             toast.error("Wystąpił błąd podczas usuwania recenzji. Spróbuj ponownie.");
+        }
+    };
+
+    const handleAddToCart = () => {
+        const quantity = 1;
+        if (user) {
+            addToUserCart(id, quantity);
+        } else {
+            addToBrowserCart(id, quantity);
         }
     };
 
@@ -135,7 +146,10 @@ export default function ProductPage() {
                         Średnia ocena: {averageRating}/5
                     </div>
 
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    <button
+                        onClick={handleAddToCart}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
                         Dodaj do koszyka
                     </button>
                 </div>
@@ -143,7 +157,6 @@ export default function ProductPage() {
 
             <div className="mt-8">
                 <h2 className="text-xl font-bold mb-4">Recenzje</h2>
-                {productError && <div className="text-red-500 mb-4">{productError}</div>}
                 {reviews.length === 0 ? (
                     <p className="text-gray-400">Brak recenzji dla tego produktu.</p>
                 ) : (

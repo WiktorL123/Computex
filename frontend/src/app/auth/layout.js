@@ -1,7 +1,6 @@
 import AuthHeader from "@/app/components/AuthHeader";
 
 export default function AuthLayout({ children }) {
-    console.log("AuthLayout rendered"); // Tymczasowy test
     return (
         <div className="bg-gray-100 min-h-screen">
 

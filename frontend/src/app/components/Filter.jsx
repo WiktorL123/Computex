@@ -36,7 +36,7 @@ export default function Filter({ filters, selectedFilters, onFilterChange }) {
             [name]: value,
         };
         setPriceRange(updatedRange);
-        debouncedPriceChange(updatedRange); // Debounced fetch for price range
+        debouncedPriceChange(updatedRange);
     };
 
     return (

@@ -11,7 +11,7 @@ import {useRouter} from "next/navigation";
 export default function CategoryPage() {
         const router = useRouter();
         const params = useParams();
-        const category_id = params.category_id; // Może być "all" lub konkretne ID
+        const category_id = params.category_id;
 
         const { products, loading, error, selectCategory, fetchProducts } = useProduct();
         const [filters, setFilters] = useState({});

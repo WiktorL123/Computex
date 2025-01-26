@@ -24,8 +24,8 @@ export const ProductProvider = ({ children }) => {
 
             const url = `http://localhost:4002/api/products${queryString}`;
 
-            console.log("Request URL:", url); // Debugowanie URL-a
-            console.log("Clean Query Params:", cleanQueryParams); // Debugowanie parametrów
+            console.log("Request URL:", url);
+            console.log("Clean Query Params:", cleanQueryParams);
 
             const response = await fetch(url, { method: "GET" });
             const data = await response.json();

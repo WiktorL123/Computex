@@ -1,4 +1,4 @@
-import Filter from "@/app/components/Filter";
+
 
 export default function CategoryLayout({children}){
     return (

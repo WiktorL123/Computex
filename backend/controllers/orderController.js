@@ -63,11 +63,27 @@ export const confirmOrder = async (req, res, next) => {
         order.updatedAt = Date.now();
         await order.save();
 
-        const cart = await Cart.findOne({ userId });
-        if (cart) {
-            cart.items = [];
-            cart.totalPrice = 0;
-            await cart.save();
+        const cart = await Cart.findOneAndUpdate(
+            { user_id: userId },
+            {
+                items: [],
+                totalPrice: 0
+            },
+            { new: true }
+        );
+        if (!cart) {
+           res.status(404).json({ message: 'Order not found for this user.' });
+        }
+
+
+
+        if (req.io){
+              setTimeout(()=>{
+                  req.io.emit('order-status-update', {
+                      orderId: id,
+                      status: order.status,
+                      message: `Order updated successfully.`,
+              })}, 3000)
         }
 
         return res.status(200).json({

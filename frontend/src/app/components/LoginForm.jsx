@@ -25,7 +25,7 @@ export default function LoginForm({ onRegisterRedirect }) {
                 .required('Hasło jest wymagane'),
         }),
         onSubmit: (values) => {
-            login(values.email, values.password); // Wywołanie funkcji logowania z kontekstu
+            login(values.email, values.password);
         },
     });
 

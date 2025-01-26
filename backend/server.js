@@ -21,6 +21,8 @@ import crypto from "crypto";
 import { adminRouter } from "./routes/adminRoutes.js";
 import { promotionRouter } from "./routes/promotionRoutes.js";
 import { notificationRouter } from "./routes/notificationsRoutes.js";
+import * as http from "node:http";
+import { Server } from "socket.io";
 
 dotenv.config();
 coonectDB();
@@ -29,8 +31,32 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+const server = http.createServer(app); // Tworzenie serwera HTTP
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+    },
+});
 
-// Generowanie losowego klucza sesji i zapis do process.env
+// Obsługa WebSocket
+io.on('connection', (socket) => {
+    console.log('User connected:', socket.id);
+
+    socket.on('order-status-update', (data) => {
+        console.log('Order status update:', data);
+        io.emit('order-status-update', data); // Emitowanie wiadomości do wszystkich klientów
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
+});
+
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
+
 if (!process.env.SESSION_SECRET) {
     const randomSessionSecret = crypto.randomBytes(32).toString('hex');
     process.env.SESSION_SECRET = randomSessionSecret;
@@ -51,32 +77,9 @@ app.use(express.json());
 
 app.use(logger);
 
-// Konfiguracja sesji
-// app.use(
-//     session({
-//         secret: process.env.SESSION_SECRET, // Klucz tajny do podpisywania sesji
-//         resave: false, // Nie zapisywać sesji, jeśli nie było zmian
-//         saveUninitialized: false, // Nie tworzyć pustych sesji
-//         cookie: {
-//             maxAge: 1000 * 60 * 60 * 24, // Czas życia ciasteczka (1 dzień)
-//             httpOnly: true, // Ciasteczko dostępne tylko po stronie serwera
-//         },
-//         store: MongoStore.create({
-//             mongoUrl: process.env.MONGODB_URI, // Adres URI do MongoDB
-//             collectionName: "sessions", // Nazwa kolekcji do przechowywania sesji
-//         }),
-//     })
-// );
-
+// Endpoint testowy
 app.get('/', (req, res) => {
     res.send("backend dziala!");
-});
-
-app.post('/api/test', (req, res) => {
-    res.json({
-        message: 'Dane otrzymane!',
-        receivedBody: req.body,
-    });
 });
 
 app.use('/admin', adminRouter);
@@ -91,16 +94,10 @@ app.use('/auth', authRouter);
 app.use('/api/promotions', promotionRouter);
 app.use('/api/notifications', notificationRouter);
 
-// app.use((req, res) => {
-//     res.status(404).render("404");
-// });
-
-app.get('/error', (req, res) => {
-    throw new Error('błąd');
-});
-
+// Obsługa błędów
 app.use(errorHandler);
 
-app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
+// Użycie server.listen zamiast app.listen
+server.listen(port, () => {
+    console.log(`Server started on http://localhost:${port}`);
 });

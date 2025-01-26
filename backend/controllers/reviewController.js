@@ -52,26 +52,22 @@ export const getReviewsByProductId = async (req, res, next) => {
 
 export const addReview = async (req, res, next) => {
     try {
-        const user_id = req.user && req.user.id; // Pobieramy `id` z `req.user`
+        const user_id = req.user && req.user.id;
         const { product_id, rating, comment } = req.body;
 
-        // Sprawdzenie, czy użytkownik jest uwierzytelniony
         if (!user_id) {
-            return res.status(403).json({ error: "User not authenticated" });
+            return res.status(403).json({ message: "User not authenticated" });
         }
 
-        // Walidacja danych wejściowych
         if (!product_id || !rating || !comment) {
-            return res.status(400).json({ error: "Product ID, rating, and comment are required" });
+            return res.status(400).json({ message: "Product ID, rating, and comment are required" });
         }
 
-        // Sprawdzenie, czy użytkownik już dodał recenzję dla produktu
         const existingReview = await Review.findOne({ user_id, product_id });
         if (existingReview) {
-            return res.status(400).json({ error: "User can add only one review per product" });
+            return res.status(400).json({ message: "User can add only one review per product" });
         }
 
-        // Tworzenie nowej recenzji
         const newReview = new Review({
             user_id,
             product_id,

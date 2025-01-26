@@ -8,8 +8,8 @@ export default function AuthLayout({ children }) {
             <AuthHeader />
 
 
-            <div className="flex items-center justify-center">
-                <div className="bg-white p-6 rounded-md shadow-md w-full max-w-md">
+            <div className=" bg-white dark:bg-dark flex items-center justify-center">
+                <div className="bg-white dark:bg-darkp-6 rounded-md shadow-md w-full max-w-md">
                     {children}
                 </div>
             </div>

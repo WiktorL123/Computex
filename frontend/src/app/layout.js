@@ -7,6 +7,9 @@ import Header from "@/app/components/Header";
 import Navbar from "@/app/components/Navbar";
 import { CategoryProvider } from "@/app/context/CategoryContext";
 import { ProductProvider } from "@/app/context/ProductContext";
+import {UserProvider} from "@/app/context/UserContext";
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RootLayout({ children }) {
     const [isNavbarOpen, setIsNavbarOpen] = useState(false);
@@ -22,20 +25,35 @@ export default function RootLayout({ children }) {
         <body className="bg-white dark:bg-dark">
         <CategoryProvider>
             <ProductProvider>
-                {/* Renderuj Header i Navbar tylko na nie-auth ścieżkach */}
-                {!isAuthPage && (
-                    <>
-                        <Header toggleNavbar={toggleNavbar} isNavbarOpen={isNavbarOpen} />
-                        <div className="hidden xs:flex text-xs xs:text-xs s:text-sm">
-                            <Navbar isOpen={true} />
-                        </div>
-                        <div className="xs:hidden">
-                            <Navbar isOpen={isNavbarOpen} />
-                        </div>
-                    </>
-                )}
+                <UserProvider>
+                    {!isAuthPage && (
+                        <>
+                            <Header toggleNavbar={toggleNavbar} isNavbarOpen={isNavbarOpen} />
+                            <div className="hidden xs:flex text-xs xs:text-xs s:text-sm">
+                                <Navbar isOpen={true} />
+                            </div>
+                            <div className="xs:hidden">
+                                <Navbar isOpen={isNavbarOpen} />
+                            </div>
+                        </>
+                    )}
 
-                <main>{children}</main>
+                    <main>{children}</main>
+
+                    <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme={"colored"}
+                    />
+
+                </UserProvider>
             </ProductProvider>
         </CategoryProvider>
         </body>

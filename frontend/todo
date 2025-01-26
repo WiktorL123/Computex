@@ -1,0 +1,3 @@
+TODO:  koszyk na froncie dla niezalofowanego usera oraz przenoszenie koszyka do zalofowanego
+proces zamowienia: produkty z koszyka - ekran zamowienia - potwiedzenie - powiadomienie o statusie na zywo za pomoca websocket
+zarzadzanie profilem: edycja danych, dodawanie edycja i usuwanie adresow dostawy

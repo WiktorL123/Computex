@@ -10,13 +10,13 @@ export const register = async (req, res, next) => {
 
         // Walidacja danych wejściowych
         if (!name || !second_name || !email || !password) {
-            return res.status(400).send({ error: "Please fill in all required fields" });
+            return res.status(400).json({ message: "Please fill in all required fields" });
         }
 
         // Sprawdzenie, czy użytkownik o podanym e-mailu już istnieje
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).send({ error: `User with email ${email} already exists` });
+            return res.status(400).json({ message: `User with email ${email} already exists` });
         }
 
         // Tworzenie nowego użytkownika
@@ -30,11 +30,11 @@ export const register = async (req, res, next) => {
 
         const savedUser = await newUser.save(); // Zapis nowego użytkownika i przypisanie do zmiennej
 
-        // Tworzenie koszyka dla nowego użytkownika
+
         const newCart = new Cart({ user_id: savedUser._id });
         await newCart.save();
 
-        return res.status(200).send({ message: "User saved successfully" });
+        return res.status(200).json({ message: "User saved successfully" });
     } catch (error) {
         console.error("Error in register:", error.message);
         next(error);

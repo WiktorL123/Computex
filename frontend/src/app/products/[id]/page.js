@@ -6,8 +6,9 @@ import { ClipLoader } from "react-spinners";
 import StarRating from "@/app/components/StarRating";
 import { useUser } from "@/app/context/UserContext";
 import { toast } from "react-toastify";
+import { Trash2 } from "lucide-react";
 
-export default function ProductPage({}) {
+export default function ProductPage() {
     const { id } = useParams();
     const {
         product,
@@ -20,8 +21,9 @@ export default function ProductPage({}) {
     const { user } = useUser();
 
     const [reviews, setReviews] = useState([]);
+    const [averageRating, setAverageRating] = useState(0);
     const [newReview, setNewReview] = useState({ rating: "", comment: "" });
-    const [error, setReviewError] = useState(null); // Error specific for reviews
+    const [error, setReviewError] = useState(null);
 
     // Fetch reviews
     const fetchReviews = async () => {
@@ -32,9 +34,11 @@ export default function ProductPage({}) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || "Nie udało się pobrać recenzji");
             }
-            setReviews(await response.json());
+            const data = await response.json();
+            setAverageRating(data.averageRating);
+            setReviews(data.reviews);
         } catch (error) {
-            setError(error.message); // For global ProductContext error
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -59,17 +63,39 @@ export default function ProductPage({}) {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                setReviewError(errorData.message); // Backend error
-                toast.error('Nie udało sie dodac recenzji');
+                setReviewError(errorData.message);
+                toast.error("Nie udało się dodać recenzji");
                 return;
             }
 
             setNewReview({ rating: "", comment: "" });
-            fetchReviews(); // Refresh reviews
+            fetchReviews();
             toast.success("Dodano recenzję!");
         } catch (error) {
-            console.log('catch')
             toast.error("Nie udało się dodać recenzji. Spróbuj ponownie.");
+        }
+    };
+
+
+    const handleDeleteReview = async (reviewId) => {
+        try {
+            const response = await fetch(`http://localhost:4002/api/reviews/${reviewId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                toast.error(`Nie udało się usunąć recenzji: ${errorData.message}`);
+                return;
+            }
+
+            toast.success("Recenzja została usunięta");
+            fetchReviews(); // Odśwież recenzje
+        } catch (error) {
+            toast.error("Wystąpił błąd podczas usuwania recenzji. Spróbuj ponownie.");
         }
     };
 
@@ -80,8 +106,6 @@ export default function ProductPage({}) {
     useEffect(() => {
         fetchReviews();
     }, []);
-
-
 
     if (loading) {
         return (
@@ -107,16 +131,8 @@ export default function ProductPage({}) {
                         Cena: {product.price} PLN
                     </p>
                     <p className="text-gray-400">Dostępność: {product.stock} sztuk</p>
-
-                    <div>
-                        <h2 className="text-lg font-semibold mb-2">Specyfikacja</h2>
-                        <ul className="list-disc list-inside text-gray-400">
-                            {Object.entries(product.filters).map(([key, value]) => (
-                                <li key={key}>
-                                    <span className="font-medium">{key}:</span> {value}
-                                </li>
-                            ))}
-                        </ul>
+                    <div className="text-yellow-500 text-lg">
+                        Średnia ocena: {averageRating}/5
                     </div>
 
                     <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
@@ -134,13 +150,23 @@ export default function ProductPage({}) {
                     reviews.map((review) => (
                         <div
                             key={review._id}
-                            className="border-b border-gray-500 py-4"
+                            className="border-b border-gray-500 py-4 flex justify-between items-center"
                         >
-                            <h3 className="font-semibold">
-                                {review.user_id?.name} {review.user_id?.second_name}
-                            </h3>
-                            <p className="text-yellow-500">Ocena: {review.rating}/5</p>
-                            <p className="text-gray-400">{review.comment}</p>
+                            <div>
+                                <h3 className="font-semibold">
+                                    {review.user_id?.name} {review.user_id?.second_name}
+                                </h3>
+                                <p className="text-yellow-500">Ocena: {review.rating}/5</p>
+                                <p className="text-gray-400">{review.comment}</p>
+                            </div>
+                            {user && user.userId === review.user_id?._id && (
+                                <button
+                                    onClick={() => handleDeleteReview(review._id)}
+                                    className="text-red-500 hover:text-red-700"
+                                >
+                                    <Trash2 size={20} />
+                                </button>
+                            )}
                         </div>
                     ))
                 )}
@@ -150,14 +176,6 @@ export default function ProductPage({}) {
                     className="mt-6 p-4 border rounded shadow-lg"
                 >
                     <h3 className="text-lg font-bold mb-2">Dodaj recenzję</h3>
-
-                    {/* Wyświetlenie błędu z backendu */}
-                    {error && (
-                        <div className="text-red-500 text-sm mb-4">
-                            {error}
-                        </div>
-                    )}
-
                     <label className="block mb-2">
                         Ocena:
                         <StarRating

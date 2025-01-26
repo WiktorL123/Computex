@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
+
+
 export const login = async (req, res, next) => {
     try {
         const {email, password} = req.body;
@@ -23,7 +25,14 @@ export const login = async (req, res, next) => {
 
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '15m'});
 
-        res.status(200).json({token: token, name: user.name});
+        // req.session.user = {
+        //     id: user._id,
+        //     name: user.name,
+        //     email: user.email,
+        //     role: user.role
+        // }
+
+        res.status(200).json({token: token, name: user.name, userId: user._id});
 
     }
 

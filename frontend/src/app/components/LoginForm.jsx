@@ -1,11 +1,11 @@
 'use client';
 
 import { useFormik } from 'formik';
-import { useUser } from '@/app/context/UserContext'; // Import kontekstu użytkownika
+import { useUser } from '@/app/context/UserContext';
 import * as Yup from 'yup';
 
 export default function LoginForm({ onRegisterRedirect }) {
-    const { login, error, loading } = useUser(); // Pobieramy `login`, `error`, `loading` z kontekstu
+    const { login, loading } = useUser();
 
     const formik = useFormik({
         initialValues: {
@@ -23,7 +23,6 @@ export default function LoginForm({ onRegisterRedirect }) {
                     'Hasło musi zawierać co najmniej jedną dużą literę, jedną małą literę, jedną cyfrę oraz jeden znak specjalny (!@#$%^&*)'
                 )
                 .required('Hasło jest wymagane'),
-
         }),
         onSubmit: (values) => {
             login(values.email, values.password); // Wywołanie funkcji logowania z kontekstu
@@ -40,16 +39,9 @@ export default function LoginForm({ onRegisterRedirect }) {
                     type="email"
                     id="email"
                     {...formik.getFieldProps('email')}
-                    className={`w-full mt-1 p-2 border rounded-md shadow-sm ${
-                        formik.touched.email && formik.errors.email
-                            ? 'border-red-500'
-                            : 'border-gray-600'
-                    } bg-gray-700 text-white`}
+                    className="w-full mt-1 p-2 border rounded-md shadow-sm bg-gray-700 text-white"
                     placeholder="Wprowadź email"
                 />
-                {formik.touched.email && formik.errors.email && (
-                    <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
-                )}
             </div>
 
             <div>
@@ -60,19 +52,10 @@ export default function LoginForm({ onRegisterRedirect }) {
                     type="password"
                     id="password"
                     {...formik.getFieldProps('password')}
-                    className={`w-full mt-1 p-2 border rounded-md shadow-sm ${
-                        formik.touched.password && formik.errors.password
-                            ? 'border-red-500'
-                            : 'border-gray-600'
-                    } bg-gray-700 text-white`}
+                    className="w-full mt-1 p-2 border rounded-md shadow-sm bg-gray-700 text-white"
                     placeholder="Wprowadź hasło"
                 />
-                {formik.touched.password && formik.errors.password && (
-                    <div className="text-red-500 text-sm mt-1">{formik.errors.password}</div>
-                )}
             </div>
-
-            {error && <div className="text-red-500 text-sm mt-1">{error.message || 'Błąd logowania'}</div>}
 
             <button
                 type="submit"

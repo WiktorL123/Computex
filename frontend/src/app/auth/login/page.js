@@ -2,8 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import LoginForm from '@/app/components/LoginForm';
-import ThemeSwitcher from '@/app/components/ThemeSwitcher';
-import Image from 'next/image';
+
 
 export default function LoginPage() {
     const router = useRouter();

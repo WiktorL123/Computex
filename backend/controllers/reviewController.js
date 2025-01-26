@@ -31,24 +31,42 @@ export const getReviewsByProductId = async (req, res, next) => {
         const { productId } = req.params;
 
         if (!productId) {
-            return res.status(404).json({ message: `invalid ID` });
+            return res.status(400).json({ message: `Invalid product ID` });
         }
 
-        const reviews = await Review.find({product_id: productId})
-            .populate({
-                path: 'user_id',
-                select: 'name second_name',
-            })
-        if (!reviews) {
-            return res.status(404).json({ message: `review not found` });
+        // Agregacja, aby obliczyć średnią ocenę i pobrać recenzje
+        const reviewsData = await Review.aggregate([
+            {
+                $match: { product_id: new mongoose.Types.ObjectId(productId) }
+            },
+            {
+                $group: {
+                    _id: null,
+                    averageRating: { $avg: "$rating" }, // Oblicz średnią ocenę
+                    reviews: { $push: "$$ROOT" } // Dodaj wszystkie recenzje
+                }
+            }
+        ]);
+
+        // Jeśli brak recenzji dla danego produktu
+        if (!reviewsData || reviewsData.length === 0) {
+            return res.status(404).json({ message: `No reviews found for product ID: ${productId}` });
         }
 
-        res.status(200).json(reviews);
-    }
-    catch (e){
+        // Pobierz recenzje z ich referencjami użytkowników (populate)
+        const populatedReviews = await Review.populate(reviewsData[0].reviews, {
+            path: 'user_id',
+            select: 'name second_name'
+        });
+
+        res.status(200).json({
+            averageRating: reviewsData[0].averageRating.toFixed(2), // Zaokrąglij do 2 miejsc po przecinku
+            reviews: populatedReviews
+        });
+    } catch (e) {
         next(e);
     }
-}
+};
 
 export const addReview = async (req, res, next) => {
     try {
@@ -126,7 +144,7 @@ export const deleteReview = async (req, res, next) => {
             return res.status(403).json({ message: "You are not authorized to delete this review" });
         }
 
-        await review.remove();
+        await review.deleteOne();
 
         res.status(200).json({
             message: "Review deleted successfully",

@@ -6,6 +6,7 @@ import {addReview} from "../controllers/reviewController.js";
 import {deleteReview} from "../controllers/reviewController.js"
 import {verifyTokenMiddleware} from "../middlewares/verifyTokenMiddleware.js";
 import {getReviewsByProductId} from "../controllers/reviewController.js";
+import {isAuthenticated} from "../middlewares/isAuthencticated.js";
 
 export const reviewRouter = express.Router();
 

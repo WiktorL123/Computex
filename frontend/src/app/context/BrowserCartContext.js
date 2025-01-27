@@ -1,8 +1,8 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 const BrowserCartContext = createContext();
+
 export const BrowserCartProvider = ({ children }) => {
     const [browserCart, setBrowserCart] = useState(() => {
         if (typeof window !== 'undefined') {
@@ -12,8 +12,15 @@ export const BrowserCartProvider = ({ children }) => {
         return [];
     });
 
+    const calculateTotalPrice = (cart) => {
+        return cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    };
+
+    const [totalPrice, setTotalPrice] = useState(() => calculateTotalPrice(browserCart));
+
     useEffect(() => {
         localStorage.setItem('guest_cart', JSON.stringify(browserCart));
+        setTotalPrice(calculateTotalPrice(browserCart));
     }, [browserCart]);
 
     const addToBrowserCart = async (productId, quantity) => {
@@ -57,10 +64,12 @@ export const BrowserCartProvider = ({ children }) => {
                 addToBrowserCart,
                 removeFromBrowserCart,
                 clearBrowserCart,
+                totalPrice,
             }}
         >
             {children}
         </BrowserCartContext.Provider>
     );
 };
+
 export const useBrowserCart = () => useContext(BrowserCartContext);

@@ -9,8 +9,19 @@ import { toast } from 'react-toastify';
 
 export default function CartPage() {
     const { user } = useUser();
-    const { userCart, fetchUserCart, addToUserCart, removeFromUserCart, totalPrice } = useUserCart();
-    const { browserCart, addToBrowserCart, removeFromBrowserCart } = useBrowserCart();
+    const {
+        userCart,
+        fetchUserCart,
+        addToUserCart,
+        removeFromUserCart,
+        totalPrice: totalPriceFromUserCart,
+    } = useUserCart();
+    const {
+        browserCart,
+        addToBrowserCart,
+        removeFromBrowserCart,
+        totalPrice: totalPriceFromBrowserCart,
+    } = useBrowserCart();
     const [cart, setCart] = useState([]);
     const router = useRouter();
 
@@ -42,14 +53,15 @@ export default function CartPage() {
 
     const handlePlaceOrder = () => {
         if (user) {
-            router.push('/order')
+            router.push('/order');
         } else {
             localStorage.setItem('guest_cart', JSON.stringify(browserCart));
             router.push('/auth/login?redirect=/cart');
         }
     };
 
-    const displayCart = user ? userCart : cart;
+    const displayCart = user ? userCart : browserCart;
+    const displayTotalPrice = user ? totalPriceFromUserCart : totalPriceFromBrowserCart;
 
     return (
         <div className="p-8">
@@ -60,23 +72,28 @@ export default function CartPage() {
                 <>
                     <ul className="space-y-4">
                         {displayCart.map((item) => (
-                            <li key={item.productId} className="flex items-center justify-between border p-4 rounded shadow">
+                            <li
+                                key={item.productId}
+                                className="flex items-center justify-between border p-4 rounded shadow"
+                            >
                                 <div>
                                     <p className="font-semibold">{item.product?.name || 'Produkt nieznany'}</p>
                                     <p className="text-gray-500">Cena: {item.product?.price || 0} PLN</p>
                                 </div>
                                 <div className="flex items-center space-x-4">
-                                    {/*<select*/}
-                                    {/*    value={item.quantity}*/}
-                                    {/*    onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value, 10))}*/}
-                                    {/*    className="border rounded p-2 text-gray-500"*/}
-                                    {/*>*/}
-                                    {/*    {[...Array(10).keys()].map((num) => (*/}
-                                    {/*        <option key={num + 1} value={num + 1}>*/}
-                                    {/*            {num + 1}*/}
-                                    {/*        </option>*/}
-                                    {/*    ))}*/}
-                                    {/*</select>*/}
+                                    <select
+                                        value={item.quantity}
+                                        onChange={(e) =>
+                                            handleQuantityChange(item.productId, parseInt(e.target.value, 10))
+                                        }
+                                        className="border rounded p-2 text-gray-500"
+                                    >
+                                        {[...Array(10).keys()].map((num) => (
+                                            <option key={num + 1} value={num + 1}>
+                                                {num + 1}
+                                            </option>
+                                        ))}
+                                    </select>
                                     <button
                                         onClick={() => handleRemoveItem(item.productId)}
                                         className="text-red-500 hover:underline"
@@ -88,7 +105,9 @@ export default function CartPage() {
                         ))}
                     </ul>
                     <div className="mt-6 flex justify-between items-center">
-                        <p className="text-lg font-bold">Łączna cena: {totalPrice.toFixed(2)} PLN</p>
+                        <p className="text-lg font-bold">
+                            Łączna cena: {displayTotalPrice.toFixed(2)} PLN
+                        </p>
                         <button
                             onClick={handlePlaceOrder}
                             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

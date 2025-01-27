@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { toast } from 'react-toastify';
 
 export const useAddresses = () => {
@@ -91,6 +91,10 @@ export const useAddresses = () => {
         }
     };
 
+    useEffect(() => {
+        fetchAddresses();
+    }, [])
+
     return {
         addresses,
         loading,
@@ -98,5 +102,7 @@ export const useAddresses = () => {
         addAddress,
         updateAddress,
         deleteAddress,
+        setLoading,
+        setAddresses,
     };
 };

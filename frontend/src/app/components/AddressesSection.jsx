@@ -25,12 +25,12 @@ export default function AddressesSection() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!addressForm.street || !addressForm.city || !addressForm.country || !addressForm.zip_code) {
-            alert('Wszystkie pola są wymagane!');
-            return;
-        }
+        // if (!addressForm.street || !addressForm.city || !addressForm.country || !addressForm.zip_code) {
+        //     return;
+        // }
 
         if (formMode === 'add') {
+            console.log('dodawany adres: ', addressForm);
             await addAddress(addressForm);
         } else if (formMode === 'edit') {
             await updateAddress(addressForm, currentAddressId);
@@ -102,7 +102,6 @@ export default function AddressesSection() {
                         value={addressForm.street}
                         onChange={handleInputChange}
                         className="w-full mt-1 p-2 border rounded-md"
-                        required
                     />
                 </div>
                 <div>
@@ -116,7 +115,7 @@ export default function AddressesSection() {
                         value={addressForm.city}
                         onChange={handleInputChange}
                         className="w-full mt-1 p-2 border rounded-md"
-                        required
+
                     />
                 </div>
                 <div>
@@ -130,7 +129,7 @@ export default function AddressesSection() {
                         value={addressForm.country}
                         onChange={handleInputChange}
                         className="w-full mt-1 p-2 border rounded-md"
-                        required
+
                     />
                 </div>
                 <div>
@@ -144,7 +143,7 @@ export default function AddressesSection() {
                         value={addressForm.zip_code}
                         onChange={handleInputChange}
                         className="w-full mt-1 p-2 border rounded-md"
-                        required
+
                     />
                 </div>
                 <button

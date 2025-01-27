@@ -6,6 +6,21 @@ import { toast } from 'react-toastify';
 export const useAddresses = () => {
     const [addresses, setAddresses] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+
+    const  handleError = (status, errorData) => {
+        switch(status) {
+            case 400:
+                toast.error(`Nieprawidlowe dane: ${errorData.error}`);
+                break
+            case 403:
+                console.log(`Brak autoryzacji: ${errorData.error}`);
+                break
+            default:
+                console.log(`Coś poszło nie tak:${errorData.error}`);
+        }
+    }
 
     const fetchAddresses = async () => {
         setLoading(true);
@@ -16,12 +31,16 @@ export const useAddresses = () => {
                 },
             });
 
-            if (!response.ok) throw new Error('Nie udało się pobrać adresów');
+            if (!response.ok) {
+                const errorData = await response.json();
+                handleError(response.status, errorData);
+                return
+            }
             const data = await response.json();
             setAddresses(data.addresses || []);
         } catch (error) {
             console.error(error.message);
-            toast.error(`Błąd podczas pobierania adresów ${error.message}`);
+            toast.error(`${error.message}`);
         } finally {
             setLoading(false);
         }
@@ -39,13 +58,21 @@ export const useAddresses = () => {
                 body: JSON.stringify(address),
             });
 
-            if (!response.ok) throw new Error('Nie udało się dodać adresu');
+            if (!response.ok) {
+                const errorData = await response.json(); // Pobierz dane błędu
+                handleError(response.status, errorData); // Obsłuż błąd za pomocą handleError
+                return; // Zakończ funkcję po obsłużeniu błędu
+            }
+
+            // Jeżeli wszystko poszło dobrze:
+            const data = await response.json(); // Pobierz dane odpowiedzi
             toast.success('Adres został dodany');
-            fetchAddresses();
+            fetchAddresses(); // Odśwież listę adresów
         } catch (error) {
-            toast.error(`Błąd podczas dodawania adresu ${error.message}`);
+
+            toast.error(`Błąd podczas dodawania adresu: ${error.message}`);
         } finally {
-            setLoading(false);
+            setLoading(false); // Zawsze ustaw `loading` na false
         }
     };
 

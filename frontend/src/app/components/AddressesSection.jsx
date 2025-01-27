@@ -15,7 +15,6 @@ export default function AddressesSection() {
         zip_code: '',
     });
 
-    // Funkcja pobierająca adresy
     const fetchAddresses = async () => {
         setLoading(true);
         try {

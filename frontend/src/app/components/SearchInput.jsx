@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useRef, useLayoutEffect, useEffect} from "react";
+import React, {useState, useCallback, useRef, useEffect} from "react";
 import { SearchIcon } from "@heroicons/react/solid";
 import "../globals.css";
 import {useRouter} from "next/navigation";

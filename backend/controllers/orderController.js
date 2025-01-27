@@ -83,7 +83,7 @@ export const confirmOrder = async (req, res, next) => {
                       orderId: id,
                       status: order.status,
                       message: `Order updated successfully.`,
-              })}, 3000)
+              })}, 10000)
         }
 
         return res.status(200).json({

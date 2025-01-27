@@ -66,17 +66,17 @@ export default function CartPage() {
                                     <p className="text-gray-500">Cena: {item.product?.price || 0} PLN</p>
                                 </div>
                                 <div className="flex items-center space-x-4">
-                                    <select
-                                        value={item.quantity}
-                                        onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value, 10))}
-                                        className="border rounded p-2 text-gray-500"
-                                    >
-                                        {[...Array(10).keys()].map((num) => (
-                                            <option key={num + 1} value={num + 1}>
-                                                {num + 1}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {/*<select*/}
+                                    {/*    value={item.quantity}*/}
+                                    {/*    onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value, 10))}*/}
+                                    {/*    className="border rounded p-2 text-gray-500"*/}
+                                    {/*>*/}
+                                    {/*    {[...Array(10).keys()].map((num) => (*/}
+                                    {/*        <option key={num + 1} value={num + 1}>*/}
+                                    {/*            {num + 1}*/}
+                                    {/*        </option>*/}
+                                    {/*    ))}*/}
+                                    {/*</select>*/}
                                     <button
                                         onClick={() => handleRemoveItem(item.productId)}
                                         className="text-red-500 hover:underline"

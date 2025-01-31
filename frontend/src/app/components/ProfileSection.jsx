@@ -4,11 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useUser } from '@/app/context/UserContext';
 
 export default function ProfileSection() {
-    const { profile, fetchProfile, updateProfile, deleteProfile, user } = useUser();
+    const { fetchProfile, updateProfile, deleteProfile, user } = useUser();
     const [formMode, setFormMode] = useState(false);
     const [profileForm, setProfileForm] = useState({
-        name: '',
-        second_name: '',
+        firstName: '',
+        lastName: '',
         email: '',
     });
 
@@ -19,13 +19,12 @@ export default function ProfileSection() {
     useEffect(() => {
         if (user) {
             setProfileForm({
-                name: user.name || '',
-                second_name: user.secondName || '',
+                firstName: user.firstName || '',
+                lastName: user.lastName || '',
                 email: user.email || '',
             });
         }
     }, [user]);
-
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -34,12 +33,12 @@ export default function ProfileSection() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Wysyłane dane:', profileForm);
-        await updateProfile(profileForm);
+        console.log('Wysyłane dane:', profileForm); // ✅ Debugging
+        await updateProfile(profileForm); // ✅ Teraz spójne nazwy pól
         setFormMode(false);
     };
 
-    if (!profile) return <p>Ładowanie danych profilu...</p>;
+    if (!user || !user.firstName) return <p>Ładowanie danych profilu...</p>;
 
     return (
         <div>
@@ -50,28 +49,28 @@ export default function ProfileSection() {
                     className="mt-6 p-4 border rounded shadow-lg space-y-4 bg-white dark:bg-gray-800 text-black"
                 >
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
                             Imię
                         </label>
                         <input
                             type="text"
-                            id="name"
-                            name="name"
-                            value={profileForm.name}
+                            id="firstName"
+                            name="firstName" // ✅ Poprawiona nazwa pola
+                            value={profileForm.firstName}
                             onChange={handleInputChange}
                             className="w-full mt-1 p-2 border rounded-md"
                             required
                         />
                     </div>
                     <div>
-                        <label htmlFor="second_name" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
                             Nazwisko
                         </label>
                         <input
                             type="text"
-                            id="second_name"
-                            name="second_name"
-                            value={profileForm.second_name}
+                            id="lastName"
+                            name="lastName" // ✅ Poprawiona nazwa pola
+                            value={profileForm.lastName}
                             onChange={handleInputChange}
                             className="w-full mt-1 p-2 border rounded-md"
                             required
@@ -89,7 +88,6 @@ export default function ProfileSection() {
                             onChange={handleInputChange}
                             className="w-full mt-1 p-2 border rounded-md"
                             required
-
                         />
                     </div>
                     <button
@@ -108,9 +106,9 @@ export default function ProfileSection() {
                 </form>
             ) : (
                 <div>
-                    <p>Imię: {user.name}</p>
-                    <p>Nazwisko: {user.secondName}</p>
-                    <p>Email: {profile.email}</p>
+                    <p>Imię: {user.firstName}</p>
+                    <p>Nazwisko: {user.lastName}</p>
+                    <p>Email: {user.email}</p>
                     <button
                         onClick={() => setFormMode(true)}
                         className="text-blue-500 hover:underline"

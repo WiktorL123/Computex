@@ -17,7 +17,7 @@ export default function Filter({ filters, selectedFilters, onFilterChange }) {
         maxPrice: selectedFilters.maxPrice || 1000,
     });
 
-    // Debounced handler for price changes
+
     const debouncedPriceChange = useCallback(
         debounce((updatedRange) => {
             onFilterChange({

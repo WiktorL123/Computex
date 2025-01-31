@@ -10,13 +10,13 @@ export const register = async (req, res, next) => {
 
         // Walidacja danych wejściowych
         if (!name || !second_name || !email || !password) {
-            return res.status(400).json({ message: "Please fill in all required fields" });
+            return res.status(400).json({ error: "Please fill in all required fields" });
         }
 
         // Sprawdzenie, czy użytkownik o podanym e-mailu już istnieje
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ message: `User with email ${email} already exists` });
+            return res.status(400).json({ error: `User with email ${email} already exists` });
         }
 
         // Tworzenie nowego użytkownika
@@ -47,12 +47,12 @@ export const getUserProfile = async (req, res, next) => {
         const userId = req.user.id;
 
         if (!userId || !isValidObjectId(userId)) {
-            return res.status(400).json({message: 'id no provided or invalid'})
+            return res.status(400).json({error: 'id no provided or invalid'})
         }
         const user = await User.findById(userId)
 
         if (!user) {
-            return res.status(404).json({message: 'No user found'})
+            return res.status(404).json({error: 'No user found'})
         }
         return res.status(200).send({
             message: 'User profile:',
@@ -74,7 +74,7 @@ export const getAllUsers = async (req, res, next) => {
         const allUsers = await User.find().select("-password");
 
         if (!allUsers || allUsers.length === 0) {
-            return res.status(404).json({ message: "No users found" });
+            return res.status(404).json({ error: "No users found" });
         }
 
         return res.status(200).json({
@@ -93,14 +93,14 @@ export const deleteUserProfile = async (req, res, next) => {
     try {
         const userId = req.user.id;
         if (!userId || !isValidObjectId(userId)) {
-            return res.status(400).json({message: 'id no provided or invalid'})
+            return res.status(400).json({error: 'id no provided or invalid'})
         }
         const deletedUser = await User.findByIdAndDelete(userId)
 
         if (!deletedUser) {
-            return res.status(404).json({message: 'No user found with that id'})
+            return res.status(404).json({error: 'No user found with that id'})
         }
-        await Cart.findOneAndDelete({userId: id})
+        await Cart.findOneAndDelete({userId})
         return res.status(200).send({message: 'User deleted successfully'})
 
     }
@@ -115,18 +115,18 @@ export const getUserAddresses = async (req, res, next) => {
         const userId = req.user.id;
 
         if (!userId || !isValidObjectId(userId)) {
-            return res.status(400).json({message: 'id no provided or invalid'})
+            return res.status(400).json({errpr: 'id no provided or invalid'})
         }
         const user = await User.findById(userId)
         if (!user) {
-            return res.status(404).json({message: 'No user found'})
+            return res.status(404).json({error: 'No user found'})
         }
         const userAddresses = user.addresses;
 
         console.log(userAddresses);
         console.log(user.addresses)
         if (!userAddresses || userAddresses.length === 0) {
-            return res.status(404).json({message: 'No user address found'})
+            return res.status(404).json({error: 'No user address found'})
         }
 
         return res.status(200).send({
@@ -139,6 +139,8 @@ export const getUserAddresses = async (req, res, next) => {
         next(error);
     }
 }
+
+
 export const updateUserProfile = async (req, res, next) => {
     try {
 
@@ -147,15 +149,19 @@ export const updateUserProfile = async (req, res, next) => {
         const {name, second_name, email} = req.body;
 
         if (!userId || !isValidObjectId(userId)) {
-            return res.status(400).json({message: 'id no provided or invalid'})
+            return res.status(400).json({error: 'id no provided or invalid'})
         }
         const user = await User.findByIdAndUpdate(userId, {name, second_name, email })
 
         if (!user) {
-            return res.status(404).json({message: 'No user found'})
+            return res.status(404).json({error: 'No user found'})
         }
 
-        return res.status(200).send({message: 'User updated successfully'})
+        return res.status(200).send({message: 'User updated successfully', user: {
+                userId: user._id,
+                firstName: user.name,
+                lastName: user.second_name,
+                email: user.email}})
     }
     catch (error) {
         next(error);
@@ -206,17 +212,17 @@ export const deleteUserAddress = async (req, res, next) => {
         const id = req.user.id;
 
         if (!id || !isValidObjectId(id)) {
-            return res.status(400).json({ message: 'ID not provided or invalid' });
+            return res.status(400).json({ error: 'ID not provided or invalid' });
         }
 
         const user = await User.findById(id);
         if (!user) {
-            return res.status(404).json({ message: 'No user found' });
+            return res.status(404).json({ error: 'No user found' });
         }
 
         const address = user.addresses.id(addressId);
         if (!address) {
-            return res.status(404).json({ message: 'No user address found' });
+            return res.status(404).json({ error: 'No user address found' });
         }
 
         user.addresses.pull(addressId);
@@ -231,49 +237,67 @@ export const deleteUserAddress = async (req, res, next) => {
 
 export const addUserAddress = async (req, res, next) => {
     try {
-        const  id  = req.user.id;
+        const id = req.user.id;
 
-        if (!id ) {
-            return res.status(400).json({ message: "id no provided or invalid" });
+        if (!id) {
+            return res.status(400).json({ error: "ID not provided or invalid" });
         }
 
         const { street, city, country, zip_code } = req.body;
 
         if (!street || !city || !country || !zip_code) {
-            return res.status(400).json({ error: "missing fields" });
-        }
 
+            const missingFields = []
+            if (!street) missingFields.push('street');
+            if (!city) missingFields.push('city');
+            if (!country) missingFields.push('country');
+            if (!zip_code) missingFields.push('zip_code');
+
+            return res.status(400).json({ error: `Missing required fields: ${missingFields}` });
+        }
+        console.log(typeof zip_code)
         const address = { street, city, country, zip_code };
 
         const updatedUser = await User.findByIdAndUpdate(
             id,
             { $push: { addresses: address } },
-            { new: true }
+            { new: true , runValidators: true}
         );
 
         if (!updatedUser) {
             return res.status(404).json({ error: "User not found" });
         }
 
-        return res.status(201).send({ message: "User address added", address });
+        return res.status(201).json({ message: "Address added successfully", address });
     } catch (error) {
-        next(error)
+
+        if (error.name === "ValidationError") {
+            const validationErrors = Object.values(error.errors)
+                .map((err) => err.message)
+                .join(", ");
+
+            return res.status(400).json({ error: `Validation failed: ${validationErrors}` });
+        }
+
+        next(error);
     }
 };
+
+
 export const getUserById = async (req, res, next) => {
     try {
         const { id } = req.params;
 
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "Invalid or missing user ID" });
+            return res.status(400).json({ error: "Invalid or missing user ID" });
         }
 
 
         const user = await User.findById(id).populate("addresses"); // Opcjonalnie możesz załadować powiązane dane, jeśli są
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ error: "User not found" });
         }
 
 

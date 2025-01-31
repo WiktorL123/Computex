@@ -130,18 +130,18 @@ export default function ProductPage() {
         <div className="p-8">
             <div className="flex flex-col md:flex-row gap-8">
                 <img
-                    src={product.images[0] || "/placeholder-image.png"}
-                    alt={product.name}
+                    src={product?.images?.[0] || "/placeholder-image.png"}
+                    alt={product?.name}
                     className="w-full md:w-1/3 object-contain rounded shadow-lg"
                 />
 
                 <div className="flex flex-col gap-4">
-                    <h1 className="text-2xl font-bold">{product.name}</h1>
-                    <p className="text-gray-400">{product.description}</p>
+                    <h1 className="text-2xl font-bold">{product?.name}</h1>
+                    <p className="text-gray-400">{product?.description}</p>
                     <p className="text-lg font-semibold text-green-600">
-                        Cena: {product.price} PLN
+                        Cena: {product?.price} PLN
                     </p>
-                    <p className="text-gray-400">Dostępność: {product.stock} sztuk</p>
+                    <p className="text-gray-400">Dostępność: {product?.stock} sztuk</p>
                     <div className="text-yellow-500 text-lg">
                         Średnia ocena: {averageRating}/5
                     </div>

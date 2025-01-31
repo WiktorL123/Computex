@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { useProduct } from "@/app/context/ProductContext";
 import { ClipLoader } from "react-spinners";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Filter from "@/app/components/Filter";
 import Product from "@/app/components/Product";
-import {useRouter} from "next/navigation";
 
 export default function CategoryPage() {
         const router = useRouter();
@@ -20,9 +19,6 @@ export default function CategoryPage() {
                 maxPrice: "",
                 customFilters: {},
         });
-
-
-
 
         useEffect(() => {
                 if (category_id === "all") {
@@ -53,49 +49,28 @@ export default function CategoryPage() {
                 }
         }, [products]);
 
-
+        // ✅ Teraz `handleFilterChange` tylko aktualizuje `selectedFilters`, nie pobiera produktów
         const handleFilterChange = (newFilters) => {
-
-                const cleanedCustomFilters = Object.fromEntries(
-                    Object.entries(newFilters.customFilters).map(([key, values]) => [
-                            key,
-                            values.filter((val) => val !== ""),
-                    ])
-                );
-
-
-                const nonEmptyCustomFilters = Object.fromEntries(
-                    Object.entries(cleanedCustomFilters).filter(([_, values]) => values.length > 0)
-                );
-
-
                 setSelectedFilters((prev) => ({ ...prev, ...newFilters }));
+        };
 
+        // ✅ `fetchProducts` wykonuje się automatycznie po zmianie filtrów lub kategorii
+        useEffect(() => {
                 const queryParams = {
                         category_id: category_id === "all" ? undefined : category_id,
-                        minPrice: newFilters.minPrice || undefined,
-                        maxPrice: newFilters.maxPrice || undefined,
-                        ...nonEmptyCustomFilters,
+                        minPrice: selectedFilters.minPrice || undefined,
+                        maxPrice: selectedFilters.maxPrice || undefined,
+                        ...Object.fromEntries(
+                            Object.entries(selectedFilters.customFilters).filter(([_, values]) => values.length > 0)
+                        ),
                 };
-
 
                 const filteredQueryParams = Object.fromEntries(
                     Object.entries(queryParams).filter(([_, value]) => value !== undefined && value !== "")
                 );
 
-
-                if (Object.keys(filteredQueryParams).length === 0) {
-
-                        if (category_id === "all" || !category_id) {
-                                selectCategory(null);
-                        } else {
-                                selectCategory(category_id);
-                        }
-                } else {
-
-                        fetchProducts(filteredQueryParams);
-                }
-        };
+                fetchProducts(filteredQueryParams);
+        }, [selectedFilters, category_id]);
 
         if (loading) {
                 return (
@@ -121,19 +96,13 @@ export default function CategoryPage() {
                     </aside>
 
                     <section className="w-3/4 p-4">
-                            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4'>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
                                     {products.map((product) => (
-                                        <div
-                                            key={product.id}
-                                            onClick={() => router.push(`/products/${product.id}`)}
-                                        >
-
-                                                <Product product={product}/>
+                                        <div key={product.id} onClick={() => router.push(`/products/${product.id}`)}>
+                                                <Product product={product} />
                                         </div>
                                     ))}
-
                             </div>
-
                     </section>
             </div>
         );

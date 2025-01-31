@@ -66,7 +66,7 @@ export const confirmOrder = async (req, res, next) => {
         const cart = await Cart.findOneAndUpdate(
             { user_id: userId },
             {
-                items: [],
+                products: [],
                 totalPrice: 0
             },
             { new: true }
@@ -75,7 +75,7 @@ export const confirmOrder = async (req, res, next) => {
            res.status(404).json({ message: 'Order not found for this user.' });
         }
 
-
+        console.log(cart.products)
 
         if (req.io){
               setTimeout(()=>{

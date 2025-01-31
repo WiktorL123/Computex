@@ -11,7 +11,11 @@ export const addressSchema = new mongoose.Schema({
         },
     city: { type: String, required: true, minLength: 3, maxLength: 16 },
     country: { type: String, required: true, minLength: 3, maxLength: 16 },
-    zip_code: { type: Number, required: true, min: 1000, max: 9999 },
+    zip_code: {
+        type: String,
+        required: true,
+        match: [/^\d{5}$/, "Zip code must be exactly 5 digits"]
+    },
 }, {_id: true});
 
 const userSchema = new mongoose.Schema({

@@ -74,33 +74,28 @@ export const addProductToCart = async (req, res, next) => {
 
 export const removeItemFromCart = async (req, res, next) => {
     try {
-        const userId = req.user.id; // Pobieranie user_id z JWT tokena
+        const userId = req.user.id;
         const { product_id } = req.body;
 
-        // Walidacja `product_id`
         if (!mongoose.Types.ObjectId.isValid(product_id)) {
             return res.status(400).json({ message: "Invalid product ID" });
         }
 
-        // Znalezienie koszyka użytkownika
         const cart = await Cart.findOne({ user_id: userId });
 
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
         }
 
-        // Filtrowanie produktów w koszyku
         const initialLength = cart.products.length;
         cart.products = cart.products.filter(
             (product) => product.product_id.toString() !== product_id
         );
 
-        // Sprawdzenie, czy produkt został usunięty
         if (cart.products.length === initialLength) {
             return res.status(404).json({ message: "Product not found in cart" });
         }
 
-        // Zapisanie zmian
         await cart.save();
 
         res.status(200).json({ message: "Product removed from cart successfully", cart });
@@ -119,7 +114,6 @@ export const clearCart = async (req, res, next) => {
             return res.status(404).json({ error: "Cart not found." });
         }
 
-        // Wyczyść produkty i zresetuj całkowitą cenę
         cart.products = [];
         cart.totalPrice = 0;
 

@@ -8,7 +8,6 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [profile, setProfile] = useState(null);
     const [orders, setOrders] = useState([]);
     const [addresses, setAddresses] = useState([]);
     const [error, setError] = useState(null);
@@ -64,15 +63,9 @@ export const UserProvider = ({ children }) => {
 
             const userData = await response.json();
             saveUserInLocalStorage(userData.token, userData.name);
-            setUser({
-                name: userData.name,
-                secondName: userData.secondName,
-                userId: userData.userId,
-                token: userData.token,
-                email: userData.email,
-            });
+            setUser(userData)
+            console.log('userData', userData);
 
-            // Scalenie koszyka offline z online
             await mergeOfflineCartWithBackend();
 
             toast.success('Logowanie udane!');
@@ -160,11 +153,8 @@ export const UserProvider = ({ children }) => {
                 throw new Error('Niekompletne dane profilu.');
             }
 
-            setProfile({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-            });
+            setUser(data);
+            console.log('userProfileData', data);
 
             toast.success('Profil załadowany pomyślnie!');
         } catch (error) {
@@ -197,10 +187,8 @@ export const UserProvider = ({ children }) => {
             const updatedUser = await response.json();
 
 
-            setUser((prevUser) => ({
-                ...prevUser,
-                ...updatedUser,
-            }));
+            setUser(updatedUser);
+            console.log('UpdatedUserProfileData', updatedUser);
 
             toast.success('Profil zaktualizowany pomyślnie!');
             fetchProfile();
@@ -361,7 +349,7 @@ export const UserProvider = ({ children }) => {
                 updateAddress,
                 orders,
                 addresses,
-                profile
+
             }}
         >
             {children}

@@ -169,6 +169,7 @@ export const UserProvider = ({ children }) => {
         try {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Dostęp zabroniony');
+            console.log('profileData', profileData);
 
             const response = await fetch('http://localhost:4002/api/users/profile', {
                 method: 'PUT',
@@ -184,14 +185,20 @@ export const UserProvider = ({ children }) => {
                 throw new Error(errorData.message || 'Nie udało się zaktualizować danych profilu.');
             }
 
-            const updatedUser = await response.json();
+            const updatedUserData = await response.json();
+            console.log('Otrzymane dane z API:', updatedUserData);
 
-
-            setUser(updatedUser);
-            console.log('UpdatedUserProfileData', updatedUser);
+            // 🔥 Poprawne aktualizowanie `user`
+            setUser((prevUser) => {
+                const newUser = {
+                    ...prevUser,
+                    ...updatedUserData.user, // Bierzemy tylko właściwe dane użytkownika
+                };
+                console.log('Nowy user:', newUser);
+                return newUser;
+            });
 
             toast.success('Profil zaktualizowany pomyślnie!');
-            fetchProfile();
         } catch (error) {
             toast.error(`Błąd: ${error.message}`);
         } finally {

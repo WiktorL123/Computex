@@ -151,7 +151,7 @@ export const updateUserProfile = async (req, res, next) => {
         if (!userId || !isValidObjectId(userId)) {
             return res.status(400).json({error: 'id no provided or invalid'})
         }
-        const user = await User.findByIdAndUpdate(userId, {name, second_name, email })
+        const user = await User.findByIdAndUpdate(userId, {name, second_name, email }, {new: true})
 
         if (!user) {
             return res.status(404).json({error: 'No user found'})

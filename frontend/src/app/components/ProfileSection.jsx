@@ -13,7 +13,8 @@ export default function ProfileSection() {
     });
 
     useEffect(() => {
-        fetchProfile();
+        if (!user)
+            fetchProfile();
     }, []);
 
     useEffect(() => {
@@ -33,8 +34,8 @@ export default function ProfileSection() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Wysyłane dane:', profileForm); // ✅ Debugging
-        await updateProfile(profileForm); // ✅ Teraz spójne nazwy pól
+        console.log('Wysyłane dane:', profileForm);
+        await updateProfile(profileForm);
         setFormMode(false);
     };
 
@@ -55,7 +56,7 @@ export default function ProfileSection() {
                         <input
                             type="text"
                             id="firstName"
-                            name="firstName" // ✅ Poprawiona nazwa pola
+                            name="firstName"
                             value={profileForm.firstName}
                             onChange={handleInputChange}
                             className="w-full mt-1 p-2 border rounded-md"
@@ -69,7 +70,7 @@ export default function ProfileSection() {
                         <input
                             type="text"
                             id="lastName"
-                            name="lastName" // ✅ Poprawiona nazwa pola
+                            name="lastName"
                             value={profileForm.lastName}
                             onChange={handleInputChange}
                             className="w-full mt-1 p-2 border rounded-md"
